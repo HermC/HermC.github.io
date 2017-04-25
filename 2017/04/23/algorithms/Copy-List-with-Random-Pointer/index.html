@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="链表,LinkedList," />
 
 
 
@@ -87,17 +87,17 @@
 
 
 
-<meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
-<meta name="keywords">
+<meta name="description" content="完全复制一个具有随机指针（指向任意一个节点或者为null）的链表。 实现方法很多，这里给出一个空间复杂度O(1)，时间复杂度O(n)的算法。它利用原来的链表对新建链表的随机指针进行定位。 算法如下: 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545">
+<meta name="keywords" content="链表,LinkedList">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://hermc.github.io/2017/04/14/hello-world/index.html">
+<meta property="og:title" content="Copy List with Random Pointer">
+<meta property="og:url" content="http://hermc.github.io/2017/04/23/algorithms/Copy-List-with-Random-Pointer/index.html">
 <meta property="og:site_name" content="Hermit">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
-<meta property="og:updated_time" content="2017-04-13T16:11:20.000Z">
+<meta property="og:description" content="完全复制一个具有随机指针（指向任意一个节点或者为null）的链表。 实现方法很多，这里给出一个空间复杂度O(1)，时间复杂度O(n)的算法。它利用原来的链表对新建链表的随机指针进行定位。 算法如下: 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545">
+<meta property="og:updated_time" content="2017-04-23T09:43:47.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="twitter:title" content="Copy List with Random Pointer">
+<meta name="twitter:description" content="完全复制一个具有随机指针（指向任意一个节点或者为null）的链表。 实现方法很多，这里给出一个空间复杂度O(1)，时间复杂度O(n)的算法。它利用原来的链表对新建链表的随机指针进行定位。 算法如下: 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545">
 
 
 
@@ -125,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://hermc.github.io/2017/04/14/hello-world/"/>
+  <link rel="canonical" href="http://hermc.github.io/2017/04/23/algorithms/Copy-List-with-Random-Pointer/"/>
 
 
 
 
 
-  <title> Hello World | Hermit </title>
+  <title> Copy List with Random Pointer | Hermit </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -298,7 +298,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://hermc.github.io/2017/04/14/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://hermc.github.io/2017/04/23/algorithms/Copy-List-with-Random-Pointer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="HermC">
@@ -319,7 +319,7 @@
             
             
               
-                Hello World
+                Copy List with Random Pointer
               
             
           </h1>
@@ -334,8 +334,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-14T00:11:20+08:00">
-                2017-04-14
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-23T17:35:07+08:00">
+                2017-04-23
               </time>
             
 
@@ -344,6 +344,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -370,15 +392,10 @@
       
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+        <p>完全复制一个具有随机指针（指向任意一个节点或者为null）的链表。</p>
+<p>实现方法很多，这里给出一个空间复杂度O(1)，时间复杂度O(n)的算法。它利用原来的链表对新建链表的随机指针进行定位。</p>
+<p>算法如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Definition for singly-linked list with a random pointer.</div><div class="line"> * class RandomListNode &#123;</div><div class="line"> *     int label;</div><div class="line"> *     RandomListNode next, random;</div><div class="line"> *     RandomListNode(int x) &#123; this.label = x; &#125;</div><div class="line"> * &#125;;</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> RandomListNode <span class="title">copyRandomList</span><span class="params">(RandomListNode head)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (head == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        RandomListNode itr = head;</div><div class="line">        RandomListNode next;</div><div class="line">        </div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 该循环将复制的节点连接到被复制的节点后面，形成</div><div class="line">         * 原节点1 -&gt; 复制节点1 -&gt; 原节点2 -&gt; 复制节点2的情况，</div><div class="line">         * 保留了位置信息</div><div class="line">         */</div><div class="line">        <span class="keyword">while</span> (itr != <span class="keyword">null</span>) &#123;</div><div class="line">            next = itr.next;</div><div class="line">            </div><div class="line">            RandomListNode copy = <span class="keyword">new</span> RandomListNode(itr.label);</div><div class="line">            itr.next = copy;</div><div class="line">            copy.next = next;</div><div class="line">            </div><div class="line">            itr = next;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">//此处循环根据原节点可以很方便的把复制节点的random指针找到</span></div><div class="line">        itr = head;</div><div class="line">        <span class="keyword">while</span> (itr != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">if</span> (itr.random != <span class="keyword">null</span>) &#123;</div><div class="line">                itr.next.random = itr.random.next;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                itr.next.random = <span class="keyword">null</span>;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            itr = itr.next.next;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">//将原链表还原，新链表重新连接</span></div><div class="line">        RandomListNode copyHead = <span class="keyword">new</span> RandomListNode(<span class="number">0</span>);</div><div class="line">        RandomListNode itrCopy = copyHead;</div><div class="line">        itr = head;</div><div class="line">        <span class="keyword">while</span> (itr != <span class="keyword">null</span>) &#123;</div><div class="line">            itrCopy.next = itr.next;</div><div class="line">            itrCopy = itrCopy.next;</div><div class="line">            itr.next = itrCopy.next;</div><div class="line">            itr = itr.next;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> copyHead.next;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -406,6 +423,14 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/链表/" rel="tag"># 链表</a>
+          
+            <a href="/tags/LinkedList/" rel="tag"># LinkedList</a>
+          
+        </div>
+      
 
       
         
@@ -415,15 +440,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/04/15/lessons/软件体系结构和系统设计/" rel="next" title="软件体系结构和系统设计">
-                <i class="fa fa-chevron-left"></i> 软件体系结构和系统设计
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/23/algorithms/Binary-Tree-Maximum-Path-Sum/" rel="prev" title="Binary Tree Maximum Path Sum">
+                Binary Tree Maximum Path Sum <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -470,17 +495,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="https://avatars2.githubusercontent.com/u/11830448"
@@ -553,22 +569,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
