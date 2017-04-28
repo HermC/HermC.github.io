@@ -295,6 +295,442 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://hermc.github.io/2017/04/28/algorithms/Wildcard-Matching/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HermC">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/11830448">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hermit">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/28/algorithms/Wildcard-Matching/" itemprop="url">
+                  Wildcard Matching
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-28T16:33:25+08:00">
+                2017-04-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>给出匹配字符串，使用”*“代表任意字符序列，使用”?”代表任意一个字符。给出目标字符串，判断是否匹配。<br>Some examples:<br>isMatch(“aa”,”a”) → false<br>isMatch(“aa”,”aa”) → true<br>isMatch(“aaa”,”aa”) → false<br>isMatch(“aa”, “*“) → true<br>isMatch(“aa”, “a*“) → true<br>isMatch(“ab”, “?*“) → true<br>isMatch(“aab”, “c*a*b”) → false</p>
+<p>算法如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String str, String pattern)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> s = <span class="number">0</span>, p = <span class="number">0</span>, match = <span class="number">0</span>, starIdx = -<span class="number">1</span>;            </div><div class="line">        <span class="keyword">while</span> (s &lt; str.length())&#123;</div><div class="line">            <span class="comment">// advancing both pointers</span></div><div class="line">            <span class="keyword">if</span> (p &lt; pattern.length()  &amp;&amp; (pattern.charAt(p) == <span class="string">'?'</span> || str.charAt(s) == pattern.charAt(p)))&#123;</div><div class="line">                s++;</div><div class="line">                p++;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// * found, only advancing pattern pointer</span></div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (p &lt; pattern.length() &amp;&amp; pattern.charAt(p) == <span class="string">'*'</span>)&#123;</div><div class="line">                starIdx = p;</div><div class="line">                match = s;</div><div class="line">                p++;</div><div class="line">            &#125;</div><div class="line">           <span class="comment">// last pattern pointer was *, advancing string pointer</span></div><div class="line">           <span class="comment">// 此处一直匹配到最后一处可能一致的地方，选取的是最大范围的"*"，是贪婪的</span></div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (starIdx != -<span class="number">1</span>)&#123;</div><div class="line">                p = starIdx + <span class="number">1</span>;</div><div class="line">                match++;</div><div class="line">                s = match;</div><div class="line">            &#125;</div><div class="line">           <span class="comment">//current pattern pointer is not star, last patter pointer was not *</span></div><div class="line">          <span class="comment">//characters do not match</span></div><div class="line">            <span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">//check for remaining characters in pattern</span></div><div class="line">        <span class="keyword">while</span> (p &lt; pattern.length() &amp;&amp; pattern.charAt(p) == <span class="string">'*'</span>)</div><div class="line">            p++;</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> p == pattern.length(); </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://hermc.github.io/2017/04/28/algorithms/Target-Sum/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HermC">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/11830448">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hermit">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/28/algorithms/Target-Sum/" itemprop="url">
+                  Target Sum
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-28T16:22:02+08:00">
+                2017-04-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>给出非负的整数数组a1…an，和一个目标数target。对数组中的每一个数，都可以选择+或者-。找出有多少种+／-的组合方法可以得到目标数target。</p>
+<p>考虑到sum(P) - sum(N) = target（sum(P)是符号为正的数的和，sum(N)是符号为负的数的和），可以得出sum(P) = sum(N) + target，即2 * sum(P) = target + sum(N) + sum(p) = target + sum。将问题转化为求符号为正的数的和为target + sum的组合的个数。</p>
+<p>算法如下: </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findTargetSumWays</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> s)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> n : nums)</div><div class="line">            sum += n;</div><div class="line">        <span class="keyword">return</span> sum &lt; s || (s + sum) % <span class="number">2</span> &gt; <span class="number">0</span> ? <span class="number">0</span> : subsetSum(nums, (s + sum) &gt;&gt;&gt; <span class="number">1</span>); </div><div class="line">    &#125;   </div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line">	 * 这个函数是采用迭代的方式计算数组中和为s的个数</div><div class="line">	 */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">subsetSum</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> s)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[s + <span class="number">1</span>]; </div><div class="line">        dp[<span class="number">0</span>] = <span class="number">1</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> n : nums)</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = s; i &gt;= n; i--)</div><div class="line">                dp[i] += dp[i - n]; </div><div class="line">        <span class="keyword">return</span> dp[s];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://hermc.github.io/2017/04/26/algorithms/Ones-and-Zeros/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HermC">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/11830448">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hermit">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/26/algorithms/Ones-and-Zeros/" itemprop="url">
+                  Ones and Zeros
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-26T16:22:10+08:00">
+                2017-04-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>给定一个由”0””1”组成的字符串列表(如{“0”, “110”, “1001”})。找出可以由m个0和n个1组成的最大字符串个数。</p>
+<p>算法采用一个m+1行和n+1列的数组保存每次迭代后的对应numOfZero个0，numOfOne个1组成的个数加一:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findMaxForm</span><span class="params">(String[] strs, <span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span>[][] matrix = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</div><div class="line">        <span class="keyword">int</span> numOfZero = <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> numOfOne = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;strs.length;i++) &#123;</div><div class="line">            numOfZero = numOfOne = <span class="number">0</span>;</div><div class="line">            String s = strs[i];</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;s.length();j++) &#123;</div><div class="line">                <span class="keyword">if</span> (s.charAt(j) == <span class="string">'0'</span>) &#123;</div><div class="line">                    numOfZero++;</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    numOfOne++;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> x=m;x&gt;=numOfZero;x--) &#123;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> y=n;y&gt;=numOfOne;y--) &#123;</div><div class="line">                    matrix[x][y] = Math.max(matrix[x][y], matrix[x-numOfZero][y-numOfOne] + <span class="number">1</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> matrix[m][n];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://hermc.github.io/2017/04/23/algorithms/Copy-List-with-Random-Pointer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -543,6 +979,860 @@
             <p>给定一个二叉树，找到图中具有最大和的路径。路径必须有<strong>至少一个node</strong>，从任意节点开始，任意节点结束，<strong>不需要经过root节点</strong>。节点值可以为<strong>负数</strong>。</p>
 <p>算法如下(参考<a href="https://discuss.leetcode.com/topic/4407/accepted-short-solution-in-java" target="_blank" rel="external">https://discuss.leetcode.com/topic/4407/accepted-short-solution-in-java</a>):</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Definition for a binary tree node.</div><div class="line"> * public class TreeNode &#123;</div><div class="line"> *     int val;</div><div class="line"> *     TreeNode left;</div><div class="line"> *     TreeNode right;</div><div class="line"> *     TreeNode(int x) &#123; val = x; &#125;</div><div class="line"> * &#125;</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">	<span class="comment">//该算法主要通过对比maxValue变量来记录最大路径长度</span></div><div class="line">    <span class="keyword">int</span> maxValue;	</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPathSum</span><span class="params">(TreeNode root)</span> </span>&#123;</div><div class="line">        maxValue = Integer.MIN_VALUE;</div><div class="line">        maxPathGoingDown(root);</div><div class="line">        <span class="keyword">return</span> maxValue;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPathGoingDown</span><span class="params">(TreeNode node)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (node == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        </div><div class="line">        <span class="comment">//对节点值为负数作出考虑，即当左右子女值均为负数的时候，则路径不向左右节点延伸</span></div><div class="line">        <span class="keyword">int</span> left = Math.max(<span class="number">0</span>, maxPathGoingDown(node.left));</div><div class="line">        <span class="keyword">int</span> right = Math.max(<span class="number">0</span>, maxPathGoingDown(node.right));</div><div class="line">        </div><div class="line">        <span class="comment">//对当前最大路径和左右子女根到叶节点最大路径（也有可能在中途停止）与当前节点值的和比较</span></div><div class="line">        maxValue = Math.max(maxValue, left + right + node.val);</div><div class="line">        </div><div class="line">        <span class="comment">//返回值是当前节点作为根到叶节点的最大路径（可能中途停止）</span></div><div class="line">        <span class="keyword">return</span> Math.max(left, right) + node.val;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://hermc.github.io/2017/04/15/lessons/j2ee复习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HermC">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/11830448">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hermit">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/15/lessons/j2ee复习/" itemprop="url">
+                  j2ee与中间件
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-15T01:16:39+08:00">
+                2017-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大学课程笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">大学课程笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><h4 id="什么是企业应用"><a href="#什么是企业应用" class="headerlink" title="什么是企业应用"></a>什么是企业应用</h4><p> 企业应用程序是分布式的、事务的和轻便的应用程序，利用服务器端技术的速度、安全性和可靠性，为企业提供业务逻辑。</p>
+<ol>
+<li>企业应用程序为企业提供了业务逻辑</li>
+<li>企业应用通常是集中管理的，经常与其他企业软件进行交互</li>
+<li>在信息技术领域的应用，企业应用必须以更少的成本，更高的速度和更少的资源来进行设计、建造和开发</li>
+</ol>
+<h4 id="J2EE多层式应用模型"><a href="#J2EE多层式应用模型" class="headerlink" title="J2EE多层式应用模型"></a>J2EE多层式应用模型</h4><p>可以分为4层：</p>
+<ul>
+<li>运行在客户机上的客户层</li>
+<li>运行在J2EE服务器上的web应用层</li>
+<li>运行在J2EE服务器上的业务逻辑层</li>
+<li><p>运行在EIS服务器上的企业信息系统层</p>
+<p>一般，J2EE应用程序被认为是三层体系结构，因为主要分布在三个地方：客户端、服务器端、数据库或是后台的遗留层。</p>
+</li>
+</ul>
+<h4 id="什么是组件"><a href="#什么是组件" class="headerlink" title="什么是组件"></a>什么是组件</h4><p>J2EE组件是一个独立的软件功能单元，与它相关的类和文件一起组织进J2EE应用，并与其他组件通讯。</p>
+<h4 id="J2EE组件与Java组件的区别"><a href="#J2EE组件与Java组件的区别" class="headerlink" title="J2EE组件与Java组件的区别"></a>J2EE组件与Java组件的区别</h4><p>Java EE组件与其他Java标准类的区别在于，Java EE将装配至一个Java EE应用中并通过验证，以保证其满足Java EE规范要求，从而可以部署在生产环境中。生产环境是一个Java EE服务器并可以管理Java EE组件的地方。</p>
+<h4 id="每一层分别有哪些组件"><a href="#每一层分别有哪些组件" class="headerlink" title="每一层分别有哪些组件"></a>每一层分别有哪些组件</h4><ol>
+<li>Application clients and applets(Java EE Client)<ul>
+<li>Web clients, Application clients, Applets, JavaBean Components</li>
+</ul>
+</li>
+<li>Web components<ul>
+<li>Servlets, web pages, JSP </li>
+</ul>
+</li>
+<li>Business components<ul>
+<li>EJB</li>
+</ul>
+</li>
+<li>EIS层<ul>
+<li>数据库和后台遗留层 </li>
+</ul>
+</li>
+</ol>
+<h4 id="J2EE运行时环境／容器"><a href="#J2EE运行时环境／容器" class="headerlink" title="J2EE运行时环境／容器"></a>J2EE运行时环境／容器</h4><p>容器是组件与底层平台功能间的接口。在Web组件、企业Bean或应用程序客户端运行之前，必须将其装配至Java EE模块并部署到容器中。</p>
+<h4 id="容器提供哪些服务"><a href="#容器提供哪些服务" class="headerlink" title="容器提供哪些服务"></a>容器提供哪些服务</h4><p>security, transaction management, Java Naming and Directory Interface (JNDI) lookups, and remote connectivity.<br>安全，事务处理，JNDI查找和远程连接。</p>
+<h4 id="容器的可配置和不可配置服务"><a href="#容器的可配置和不可配置服务" class="headerlink" title="容器的可配置和不可配置服务"></a>容器的可配置和不可配置服务</h4><ul>
+<li>J2EE安全模型让你可以配置Web组件或者是企业Bean，以保证资源只能被授权用户访问。</li>
+<li>J2EE事务模型让你指定属于同一个事务的多个方法以使这些方法作为一个原子操作被执行。</li>
+<li>JNDI查找服务为企业应用中的多种命名和目录服务提供统一接口，使应用程序组件可以统一访问这些命名和目录服务。</li>
+<li>J2EE远程连接模型管理客户端和企业Bean之间的底层通信。企业Bean被创建后，客户端调用它的方法就像在本地虚拟机中的调用一样。</li>
+<li>容器也管理着很多不可配置的服务，如<strong>企业Bean和Servlet的生命周期</strong>，<strong>数据库连接池</strong>，<strong>数据持久化机制</strong>和<strong>J2EE平台API</strong>的访问权等等。</li>
+</ul>
+<h4 id="容器的类型"><a href="#容器的类型" class="headerlink" title="容器的类型"></a>容器的类型</h4><ol>
+<li>Java EE Server<ul>
+<li>EJB Container<ul>
+<li>管理Java EE应用企业Bean的执行。</li>
+</ul>
+</li>
+<li>Web Container<ul>
+<li>管理Java EE应用的Web pages, Servlets, 和其他一些EJB组件的执行。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Application Client Server<ul>
+<li>管理客户端组件的执行 </li>
+</ul>
+</li>
+<li>Applet Container<ul>
+<li>管理Applets的执行</li>
+</ul>
+</li>
+</ol>
+<h4 id="J2EE打包成三种文件"><a href="#J2EE打包成三种文件" class="headerlink" title="J2EE打包成三种文件"></a>J2EE打包成三种文件</h4><ul>
+<li>Java Archive(JAR) file</li>
+<li>Web Archive(WAR) file</li>
+<li>Enterprise Archive(EAR) file</li>
+<li>war和ear都是jar只是加上了扩展名</li>
+</ul>
+<h4 id="一个标准的J2EE模块包含哪些部分"><a href="#一个标准的J2EE模块包含哪些部分" class="headerlink" title="一个标准的J2EE模块包含哪些部分"></a>一个标准的J2EE模块包含哪些部分</h4><ul>
+<li>功能性的一个或多个组件</li>
+<li><p>可选的部署描述文件</p>
+</li>
+<li><p>Web模块</p>
+<ul>
+<li>*.war</li>
+<li>包括servlet类文件，JSP页面文件，支持类文件，GIF和html文件，XML配置文件</li>
+<li>resources<ul>
+<li>html</li>
+<li>css</li>
+<li>js</li>
+<li>…</li>
+</ul>
+</li>
+<li>WEB-INF<ul>
+<li>web.xml</li>
+<li>*.xml</li>
+<li>classes</li>
+<li>tld</li>
+<li>lib</li>
+<li>…  </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>EJB模块</p>
+<ul>
+<li>*.ear</li>
+<li>包括ejb文件，ejb配置文件</li>
+<li>application client模块：*.jar，包括相关类文件，程序客户端配置文件</li>
+<li><p>resource adapter模块：*.rar，包括所有的java接口，类，本地库和文档和资源适配描述文件</p>
+<p><img src="http://i1.piimg.com/567571/13902be2ee301490.png" alt=""></p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-Web应用"><a href="#2-Web应用" class="headerlink" title="2. Web应用"></a>2. Web应用</h2><h4 id="什么是Web应用"><a href="#什么是Web应用" class="headerlink" title="什么是Web应用"></a>什么是Web应用</h4><p>Web应用是Web应用服务器的动态拓展，有面向服务的和面向表现的两种类型。</p>
+<ul>
+<li>Presentation-oriented<ul>
+<li>通过标记语言和对请求响应的动态内容生成可交互Web页面</li>
+</ul>
+</li>
+<li>Service-oriented<ul>
+<li>面向服务的Web应用程序实现Web服务的端点</li>
+</ul>
+</li>
+</ul>
+<p>一般来说，一个Web应用可以看成是一组安装在服务器URL名称空间的特定子集下面的Servlet的集合。</p>
+<h4 id="请求处理过程"><a href="#请求处理过程" class="headerlink" title="请求处理过程"></a>请求处理过程</h4><ol>
+<li>客户端向Web服务器发送一个http请求</li>
+<li>实现了Java Servlet和Java Server Pages技术的服务器将请求转换为一个HttpServletRequest对象</li>
+<li>这个对象被投递到一个Web组件，这个组件可以与JavaBeans组件或者一个数据库交互生成一个动态内容(dynamic content)</li>
+<li>这个组件可以生成一个HttpServletResponse或者将这个请求转发给其他Web组件</li>
+<li>Web组件最终生成一个HttpServletResponse对象</li>
+<li>Web服务器将这个对象转换成http应答消息返回给客户端</li>
+</ol>
+<h4 id="Web容器提供哪些服务"><a href="#Web容器提供哪些服务" class="headerlink" title="Web容器提供哪些服务"></a>Web容器提供哪些服务</h4><ul>
+<li>request dispatching（请求分发）, security（安全）, concurrency（并发）, and lifecycle management（生命周期管理）</li>
+<li>Web容器同时也为Web组件提供了获取命名、事务、邮件（naming, transactions, and email）的API的方式</li>
+<li>Java EE annotations和部署配置文件进行配置</li>
+</ul>
+<h4 id="Web模块包含哪些内容"><a href="#Web模块包含哪些内容" class="headerlink" title="Web模块包含哪些内容"></a>Web模块包含哪些内容</h4><ul>
+<li>Web组件、web资源</li>
+<li>帮助类库(Helper classes and libraries)</li>
+<li>服务器端实用工具类（utility classes，例如database beans，shopping carts等）</li>
+<li>客户端类（applets和utility classes）</li>
+</ul>
+<h4 id="Web资源有哪些"><a href="#Web资源有哪些" class="headerlink" title="Web资源有哪些"></a>Web资源有哪些</h4><p>包含Web部件和静态网页内容的文件如图像的Web模块被称为网络资源</p>
+<h4 id="Web模块的目录结构"><a href="#Web模块的目录结构" class="headerlink" title="Web模块的目录结构"></a>Web模块的目录结构</h4><ol>
+<li>根目录document root：存放html，XHTML页面，客户端类和文档，静态资源例如图片等的目录；</li>
+<li>WEB-INF目录：<ul>
+<li>已经编译的class服务器端的类文件夹（servlets, enterprise bean class files, utility classes, and JavaBeans components）</li>
+<li>tags标签文件夹</li>
+<li>lib引用类库文件夹</li>
+<li>配置类文件（例如web.xml，ejb-jar.xml）</li>
+</ul>
+</li>
+</ol>
+<p><img src="http://i4.buimg.com/567571/9fcd23362028a4eb.png" alt=""></p>
+<h4 id="Tomcat组件"><a href="#Tomcat组件" class="headerlink" title="Tomcat组件"></a>Tomcat组件</h4><ol>
+<li>Server: 代表一个服务器</li>
+<li><p>Connector：在某一个指定端口监听用户请求，并且将获得的请求交给engine来处理</p>
+<ul>
+<li>Java HTTP Connector在端口8080侦听来自客户Browser的http请求<ul>
+<li>AJP 1.3 Connector在端口8009侦听来自其他Web Server(Apache)的JSP/Servlet代理请求</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Engine：将获得的请求匹配到某个虚拟主机上，并且吧请求交给该host来处理</p>
+</li>
+<li>Host：代表虚拟主机，每一个都和某个网络域名想匹配，每一个都可部署多个web应用</li>
+<li>Context：对应一个Web应用（由一些Servlet，HTML，Java类，JSP页面和一些其他的资源组成，在创建时根据在获得\<tomcat_home\>/conf/web.xml和\<webapp_home\>/WEB-INF/web.xml载入Servlet类。在请求时查询映射表找到被请求Servlet类并且执行以获得请求回应）</webapp_home\></tomcat_home\></li>
+</ol>
+<h4 id="Tomcat请求处理流程"><a href="#Tomcat请求处理流程" class="headerlink" title="Tomcat请求处理流程"></a>Tomcat请求处理流程</h4><ol>
+<li>请求被发送到本机端口8080,被Java HTTP Connector获得</li>
+<li>Connector将该请求交给它所在的service的Engine来处理并等待Engine的回应</li>
+<li>Engine获得请求，匹配所有的虚拟主机</li>
+<li>Engine匹配到名为localhost的主机</li>
+<li>Localhost主机获得请求，匹配所拥有的所有Context</li>
+<li>Localhost主机匹配到路径为/HelloWorld的Context</li>
+<li>路径为/HelloWorld的Context获得请求，在映射表中寻找对应的servlet</li>
+<li>Context匹配URLPATTERN为/的Servlet</li>
+<li>构造HttpServletRequest对象和HttpServletResponse对象，作为引用调用该Servlet的Service方法</li>
+<li>Context把执行完后的HttpServletResponse返回给localhost主机</li>
+<li>Host把HttpServletResponse对象返回给Engine</li>
+<li>Engine把HttpServletResponse对象返回给Connector</li>
+<li>Connector把HttpServletResponse对象返回给客户Browser</li>
+</ol>
+<hr>
+<h2 id="3-Servlet"><a href="#3-Servlet" class="headerlink" title="3. Servlet"></a>3. Servlet</h2><h4 id="Servlet"><a href="#Servlet" class="headerlink" title="Servlet"></a>Servlet</h4><p>Servlet是Java编程语言的类，用于扩展采用请求响应模式的服务器应用程序容量。</p>
+<h4 id="Servlet生命周期"><a href="#Servlet生命周期" class="headerlink" title="Servlet生命周期"></a>Servlet生命周期</h4><p>Servlet的生命周期由Servlet所部署的容器控制。<br>当一个客户端请求发送到服务器时，容器开始执行以下步骤：</p>
+<ol>
+<li>如果servlet实例不存在Web容器会：<ul>
+<li>载入servlet类</li>
+<li>创建一个servlet的实例</li>
+<li>调用init方法初始化这个实例</li>
+</ul>
+</li>
+<li>然后调用service的方法，传递request和response对象</li>
+</ol>
+<p>如果容器需要移除这个servlet，那么他就会通过调用servlet的destroy方法来释放这个servlet。</p>
+<h4 id="什么是URL-Pattern"><a href="#什么是URL-Pattern" class="headerlink" title="什么是URL Pattern"></a>什么是URL Pattern</h4><p>一个用于定义web组件或者例如图片，html页面这类静态对象的字符串。</p>
+<h4 id="请求URL"><a href="#请求URL" class="headerlink" title="请求URL"></a>请求URL</h4><p>URL包含以下部分：<br><a href="http://[host]:[port][request-path]?[query-string" target="_blank" rel="external">http://[host]:[port][request-path]?[query-string</a>]</p>
+<p>请求路径由以下元素组成:</p>
+<ul>
+<li>Context path: 向前的斜线/和servlet的Web应用的上下文根的拼接</li>
+<li>Servlet path: 与激活该请求的组件别名相应的路径部分，由向前的斜线/开始</li>
+<li>Path info: 请求路径的部分，不是上下文路径或者servlet路径的部分</li>
+</ul>
+<h4 id="Http请求，URL组成部分包括哪些元素？"><a href="#Http请求，URL组成部分包括哪些元素？" class="headerlink" title="Http请求，URL组成部分包括哪些元素？"></a>Http请求，URL组成部分包括哪些元素？</h4><p>采用请求响应模型，request（从客户端到服务器端），response（从服务器端到客户端）</p>
+<ol>
+<li>Request包括：</li>
+</ol>
+<p>request方法（包括GET，HEAD，POST，PUT，DELETE，OPTIONS，TRACE）<br>requestURL（一个字符串，由它来导向一个web组件，或者是一个静态的对象，例如html页面或者是图片文件什么的）<br>header fields<br>body</p>
+<ol>
+<li>Response包括：</li>
+</ol>
+<p>result code（例如404（表示请求资源不可用），401（请求需要HTTP认证），500（服务器内部错误导致无法完成请求）503（服务器超载导致无法完成请求））<br>header fields<br>body</p>
+<h4 id="URL和URI的区别"><a href="#URL和URI的区别" class="headerlink" title="URL和URI的区别"></a>URL和URI的区别</h4><p>URL是一种具体的URI，它不仅唯一标识资源，而且还提供了定位该资源的信息。<br>URI是一种语义上的抽象概念，可以是绝对的，也可以是相对的，而URL则必须提供足够的信息来定位，所以，是绝对的。</p>
+<h4 id="如何处理Servlet的线程安全问题"><a href="#如何处理Servlet的线程安全问题" class="headerlink" title="如何处理Servlet的线程安全问题"></a>如何处理Servlet的线程安全问题</h4><p>可以使用同步机制</p>
+<ol>
+<li>Servlet默认是多线程的，Server创建一个实例，用它处理并发请求——编写线程安全的类，避免使用可以修改的类变量和实例变量</li>
+<li>实例变量是在堆中分配的，不是线程安全的；</li>
+<li>Request，response是线程安全的</li>
+<li>局部变量是在栈中分配的，是线程安全的（局部变量可以作为参数传递）</li>
+<li>实现 SingleThreadModel接口：该接口指定了系统如何处理对同一个Servlet的调用。如果一个Servlet被这个接口指定,那么在这个Servlet中的service方法将不会有两个线程被同时执行，当然也就不存在线程安全的问题。</li>
+<li>同步对共享数据的操作：使用synchronized关键字能保证一次只有一个线程可以访问被保护的区段，在本论文中的Servlet可以通过同步块操作来保证线程的安全。</li>
+</ol>
+<h4 id="Http-Session会话机制"><a href="#Http-Session会话机制" class="headerlink" title="Http Session会话机制"></a>Http Session会话机制</h4><ul>
+<li>Cookie机制<ol>
+<li>当用户第一次访问站点→创建一个新的会话对象（Httpsession）， Server分配一个唯一的会话标识号(sessionID)<ul>
+<li>Servlet容器自动处理sessionID的分配</li>
+<li>尽可能长，确保安全</li>
+<li>把sessionID信息放到HttpSession对象中</li>
+</ul>
+</li>
+<li>Server创建一个暂时的HTTP cookie<ul>
+<li>cookie存储这个sessionID（名:jsessionid）</li>
+<li>Server将cookie添加到HTTP响应中</li>
+<li>Cookie被放置到客户机浏览器中，存储到客户机硬盘</li>
+</ul>
+</li>
+<li>客户浏览器发送包含Cookie的请求</li>
+<li>根据客户机浏览器发送的sessionID信息（cookie），Server找到相应的HttpSession对象，跟踪会话</li>
+<li>在会话超时间隔期间，如果没有接收到新的请求， Server将删除此会话对象<ul>
+<li>用户又访问该站点，必须重新登录，确保安全 </li>
+</ul>
+</li>
+</ol>
+</li>
+<li>URL重写<ol>
+<li>1、5与Cookie机制相同 </li>
+<li>Server将sessionID放在返回给客户端的URL中</li>
+<li>客户浏览器发送的请求将包含sessionID</li>
+<li>根据包含请求的sessionID信息（URL），Server找到相应的HttpSession对象，跟踪会话</li>
+</ol>
+</li>
+</ul>
+<h4 id="Cookie和Session两者应用上的区别"><a href="#Cookie和Session两者应用上的区别" class="headerlink" title="Cookie和Session两者应用上的区别"></a>Cookie和Session两者应用上的区别</h4><ul>
+<li><p>Cookie</p>
+<ol>
+<li>跟踪会话，也可以独立于http会话使用cookie</li>
+<li>长期“记住用户信息”</li>
+<li><p>存储在本地计算机硬盘上 </p>
+<p>用户登录ID<br>用户对语言和颜色的选择之类的偏好<br>跟踪应用程序的使用情况<br>cookie.txt文件</p>
+</li>
+</ol>
+</li>
+<li><p>Session</p>
+<ol>
+<li>保存在服务器端内存中</li>
+<li><p>使用机制不同 </p>
+<p>跟踪用户的购物车<br>导航信息，登录状态</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="Web组件共享信息的方式"><a href="#Web组件共享信息的方式" class="headerlink" title="Web组件共享信息的方式"></a>Web组件共享信息的方式</h4><ul>
+<li>通过使用私有的帮助对象（helper objects），比如：JavaBeans components</li>
+<li>通过共享公共作用域的对象属性（objects that are attributes of a public scope）</li>
+<li>可以使用数据库</li>
+<li>可以调用其它网络资源</li>
+</ul>
+<h4 id="Web组件共享信息的四种作用域对象"><a href="#Web组件共享信息的四种作用域对象" class="headerlink" title="Web组件共享信息的四种作用域对象"></a>Web组件共享信息的四种作用域对象</h4><ul>
+<li>Web Content<ul>
+<li>作用域为应用程序运行期，工程启动后存在，当容器关闭时被销毁 </li>
+</ul>
+</li>
+<li>Session<ul>
+<li>作用域为会话期，从打开一个浏览器窗口开始，关闭窗口，会话关闭，当会话超时，被销毁 </li>
+</ul>
+</li>
+<li>Request<ul>
+<li>作用域为用户请求期，只要Server向客户端输出内容，就被销毁 </li>
+</ul>
+</li>
+<li>Page<ul>
+<li>作用域为页面执行期</li>
+</ul>
+</li>
+</ul>
+<h4 id="过滤器，与其他Web组件的区别"><a href="#过滤器，与其他Web组件的区别" class="headerlink" title="过滤器，与其他Web组件的区别"></a>过滤器，与其他Web组件的区别</h4><ul>
+<li>过滤器是一个可以改变请求或响应的标题或者内容的对象。</li>
+<li>过滤器和其他web组件不同的地方在于，过滤器通常不需要自己创建一个响应，相反，他们提供可以附加于任何类型的网络资源上的功能。</li>
+<li>应用场景<ul>
+<li>改善代码重用，在不修改servlet代码的情况下想servlet添加功能<ul>
+<li>身份验证</li>
+</ul>
+</li>
+<li>用于跨多个servlet执行一些功能，创建可重复使用的功能</li>
+<li>在servlet处理请求之前截获请求<ul>
+<li>在调用servlet之前截获请求，验证用户身份，未经授权的用户遭到拒绝，而servlet不知道曾经有过这样的请求</li>
+</ul>
+</li>
+<li>代码重用、应用安全策略、日志、为特定目标浏览器传输XML输出、图像转换和加密、动态压缩输出 </li>
+</ul>
+</li>
+</ul>
+<h4 id="J2EE监听器"><a href="#J2EE监听器" class="headerlink" title="J2EE监听器"></a>J2EE监听器</h4><p>监听器是当生命周期时间发生前、发生后进行一些处理。</p>
+<p>可以监听的生命周期事件：</p>
+<ul>
+<li>Web Context<ul>
+<li>初始化和销毁</li>
+<li>属性的添加、移除或替换</li>
+</ul>
+</li>
+<li>Session<ul>
+<li>创建，失效，活化，钝化，超时</li>
+<li>属性的添加、移除或替换</li>
+</ul>
+</li>
+<li>Request<ul>
+<li>一个servlet请求开始被web组件处理  </li>
+<li>属性的添加、移除或替换</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>监听系统关闭或者是开启</li>
+<li>监听用户访问次数</li>
+<li>监听用户是否登录</li>
+<li>监听session是否改变等</li>
+</ol>
+<h4 id="部署描述文件和注解的区别"><a href="#部署描述文件和注解的区别" class="headerlink" title="部署描述文件和注解的区别"></a>部署描述文件和注解的区别</h4><ul>
+<li>注解往往是类级别的，因此，XML 配置则可以表现得更加灵活</li>
+<li>在应用中，往往需要同时使用注解配置和 XML 配置<ul>
+<li>对于类级别且不会发生变动的配置可以优先考虑注解配置</li>
+<li>而对于那些第三方类以及容易发生调整的配置则应优先考虑使用 XML 配置</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-JSP页面"><a href="#4-JSP页面" class="headerlink" title="4. JSP页面"></a>4. JSP页面</h2><h4 id="JSP"><a href="#JSP" class="headerlink" title="JSP"></a>JSP</h4><p>JSP允许创建包括静态和动态组件的web内容。servlet是JSP的基础，JSP提供了所有servlet可以实现的动态功能，并且还提供一种更加自然的静态内容的创建方法。</p>
+<ul>
+<li>静态数据<ul>
+<li>HTML, SVG, WML and XML</li>
+<li>静态数据转换成将数据发送到响应流中的代码 </li>
+</ul>
+</li>
+<li>JSP元素<ul>
+<li>Directives指令用于控制web容器如何翻译和执行JSP页面</li>
+<li>Scripting elements脚本元素插入该JSP页面的servlet类中</li>
+<li>Expression language表达式作为参数传递给JSP表达式解释器</li>
+<li>jsp:[set|get]Property转换成方法调用JavaBeans组件</li>
+<li>jsp:[include|forward]转换成Java Servlet API的调用</li>
+<li>jsp:plugin被转换成浏览器特定的标记，用于激活一个applet</li>
+<li>Custom tags自定义标签调用标记处理程序实现自定义标签调用</li>
+</ul>
+</li>
+</ul>
+<h4 id="JSP生命周期"><a href="#JSP生命周期" class="headerlink" title="JSP生命周期"></a>JSP生命周期</h4><p>JSP页面以Servlet的形式提供请求服务，所以，JSP的生命周期和许多JSP功能都是由Servlet技术决定的（特别是动态的方面）</p>
+<ol>
+<li>如果JSP页面的servlet实例不存在，容器将：<ul>
+<li>加载该JSP页面的servlet类</li>
+<li>实例化servlet类的实例 </li>
+<li>通过调用jspInit方法初始化servlet实例</li>
+</ul>
+</li>
+<li>容器调用_jspservice方法，传递请求和响应对象</li>
+<li>如果容器需要移除JSP页面的servlet，它调用jspDestroy方法</li>
+</ol>
+<h4 id="指令元素"><a href="#指令元素" class="headerlink" title="指令元素"></a>指令元素</h4><ul>
+<li>page指令：可以通过Page指令来控制各种JSP页面执行参数<ul>
+<li><code>&lt;jsp:directive.page attribute list/&gt;</code></li>
+<li><code>&lt;%@ page property-attribs%&gt;</code></li>
+<li>参数包括：<ul>
+<li>session是否创建session<ul>
+<li><code>&lt;%@ page  session= &quot;true&quot; %&gt;</code> </li>
+</ul>
+</li>
+<li>import引用依赖<ul>
+<li><code>&lt;%@ page import= &quot;package.*&quot; %&gt;</code> </li>
+</ul>
+</li>
+<li>extends扩展其他类<ul>
+<li><code>&lt;%@ page extends= &quot;com.learnweblogic.JspCommon&quot; %&gt;</code> </li>
+</ul>
+</li>
+<li>contentType设置文本类型和字符编码<ul>
+<li><code>&lt;%@ page contentType= &quot;text/html,charset=GBK&quot; %&gt;</code></li>
+</ul>
+</li>
+<li>buffer设置缓冲区<ul>
+<li>缺省情况下：写入输出流的内容会立即发送给客户</li>
+<li><code>&lt;%@ page buffer=&quot;none|xxxkb&quot; %&gt;</code></li>
+</ul>
+</li>
+<li>isThreadSafe<ul>
+<li>isThreadSafe= “true|false”</li>
+<li>false意味着一次只能有一个线程执行JSP中的代码</li>
+</ul>
+</li>
+<li>errorPage<ul>
+<li><code>&lt;%@ page errorPage=&quot;file-name&quot; %&gt;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>include指令：当JSP页面被转换成Servlet时被处理，实现JSP页面的模块化，使JSP的开发和维护变得相当简单</p>
+<ul>
+<li><code>&lt;jsp:directive.include file=&quot;filename&quot;/&gt;</code> </li>
+<li><code>&lt;%@ include file=&quot;filename&quot; %&gt;</code></li>
+<li><p>相当于</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">RequestDispatcher dispatcher=getServletContext().getRequestDispatcher(&quot;/banner.jsp&quot;);</div><div class="line">if(dispatcher!=null)</div><div class="line">	dispatcher.include(request,response);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>Taglib指令</p>
+<ul>
+<li><code>&lt;%@ taglib uri=&quot;uri&quot; prefix=&quot;tagPrefix&quot; %&gt;</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="脚本元素"><a href="#脚本元素" class="headerlink" title="脚本元素"></a>脚本元素</h4><ul>
+<li><p>声明</p>
+<ul>
+<li><p>声明的变量只在当前页面中可用<code>&lt;%! int foo=3; %&gt;</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;%!</div><div class="line">	public void jspInit() &#123;</div><div class="line">		……</div><div class="line">	&#125;</div><div class="line">%&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>脚本</p>
+<ul>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;%</div><div class="line">	scripting-language-statements</div><div class="line">%&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>表达式</p>
+<ul>
+<li><code>&lt;%= scripting-language-expression %&gt;</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="脚本元素中创建和使用对象的方法有哪些？这些对象在翻译时如何进行处理？"><a href="#脚本元素中创建和使用对象的方法有哪些？这些对象在翻译时如何进行处理？" class="headerlink" title="脚本元素中创建和使用对象的方法有哪些？这些对象在翻译时如何进行处理？"></a>脚本元素中创建和使用对象的方法有哪些？这些对象在翻译时如何进行处理？</h4><ul>
+<li>类实例和类变量：在声明中创建，在脚本和表达式中被使用</li>
+<li>局部变量：在脚本和表达式中被创建和使用</li>
+<li>作用域对象的属性：在脚本和表达式中被创建和使用</li>
+</ul>
+<h4 id="JSP常用隐式对象"><a href="#JSP常用隐式对象" class="headerlink" title="JSP常用隐式对象"></a>JSP常用隐式对象</h4><ol>
+<li>Out对象<ul>
+<li>做PrintWriter对象能做的一切事情</li>
+<li>调用print()/println()方法，把信息回送给客户端浏览器</li>
+<li>作用域是当前页面（page）</li>
+<li>每个JSP页面有一个out对象的实例</li>
+<li>缺省采用缓存，可以使用page指令调整其大小 </li>
+</ul>
+</li>
+<li>Request对象<ul>
+<li>使用request对象得到请求信息中的参数</li>
+</ul>
+</li>
+<li>Response对象<ul>
+<li>使用response对象发送重定向、修改HTTP头、指定URL重写</li>
+</ul>
+</li>
+<li>Session对象<ul>
+<li>javax.servlet.http.HttpSession的实例    </li>
+</ul>
+</li>
+<li>Application对象<ul>
+<li>从web.xml获取初始化参数、访问RequestDispatcher</li>
+</ul>
+</li>
+<li>PageContext对象<ul>
+<li>对页面作用域的属性的访问</li>
+</ul>
+</li>
+</ol>
+<h4 id="JSP动作"><a href="#JSP动作" class="headerlink" title="JSP动作"></a>JSP动作</h4><ul>
+<li>可以使用脚本执行动作提供的任何功能</li>
+<li>动作改进了脚本，易于使用，帮助摆脱java代码</li>
+</ul>
+<ol>
+<li><code>&lt;jsp:include&gt;</code><ul>
+<li><code>&lt;jsp:include page= &quot; Copyright.html&quot; /&gt;</code></li>
+<li>与include指令的区别<ul>
+<li>include指令：包括其他页面，编译时把其他页面的内容加进来，比include动作快  </li>
+<li>include标准动作：使用RequestDispatcher，运行时把其他页面的内容加进来（包括到输出流中）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>&lt;jsp:forward&gt;</code><ul>
+<li><code>&lt;jsp:forward page= &quot; foo.jsp&quot; /&gt;</code></li>
+<li>与HTTP重定向的差别<ul>
+<li>HTTP重定向：发送的请求信息又回送给客户机，让客户机再转发到另一个资源上，新的URL出现在Web浏览器中，需要在服务器和客户机之间增加一次通信</li>
+<li>forward标准动作：使用RequestDispatcher ，JSP的转发功能是在服务器本身上实现的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>&lt;jsp:param&gt;</code></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">	&lt;jsp:include page= &quot; /itemdetail.jsp&quot; &gt;</div><div class="line">		&lt;jsp:param name= &quot; itemid &quot; value= &quot; %=itemId&quot; /&gt;</div><div class="line">	&lt;/jsp: include &gt;</div><div class="line">	``` </div><div class="line">4. `&lt;jsp:plugin&gt;`</div></pre></td></tr></table></figure>
+<p> <jsp:plugin type="“bean|applet”" code="“classname”" codebase="“codebase-uri”" […..]=""><br> </jsp:plugin><br> ```</p>
+</li>
+<li><code>&lt;jsp:useBean&gt;``&lt;jsp:sebProperty&gt;``&lt;jsp:getProperty&gt;</code>    </li>
+</ol>
+<h4 id="Java-Bean组件的设计规范"><a href="#Java-Bean组件的设计规范" class="headerlink" title="Java Bean组件的设计规范"></a>Java Bean组件的设计规范</h4><ol>
+<li>一个JavaBean组件属性必须是<ul>
+<li>Read/write, read-only, or write-only</li>
+<li>简单，也就是说它只包含一个数值或一个索引（即指代表一个数组）</li>
+</ul>
+</li>
+<li>必须使用符合下列约定的public方法来访问<ul>
+<li>对每一个可读的属性，具有方法：<code>PropertyClass getProperty() {...}</code></li>
+<li>对每一个可写的属性，具有方法：<code>setProperty(PropertyClass pc) {...}</code></li>
+</ul>
+</li>
+<li>Java Bean还需要有一个无参构造函数</li>
+</ol>
+<h4 id="Java-Bean组件的作用域"><a href="#Java-Bean组件的作用域" class="headerlink" title="Java Bean组件的作用域"></a>Java Bean组件的作用域</h4><ol>
+<li>application<br> <code>&lt;jsp:useBean id=&quot;locales&quot; scope=&quot;application&quot; class=&quot;mypkg.MyLocales&quot;/&gt;</code> </li>
+<li>session</li>
+<li>request</li>
+<li>page</li>
+</ol>
+<hr>
+<h2 id="5-EJB"><a href="#5-EJB" class="headerlink" title="5. EJB"></a>5. EJB</h2><h4 id="什么是EJB"><a href="#什么是EJB" class="headerlink" title="什么是EJB"></a>什么是EJB</h4><p>企业bean是用Java编程语言编写的一种服务器端组件用于封装应用程序的业务逻辑。</p>
+<ul>
+<li>Session Bean：为客户端执行某个任务，也有可能实现一个Web服务，封装业务逻辑，可以被本地的或者远程的客户端以及网络服务客户端的页面（web service client views）<ul>
+<li>Session Bean封装了实现的复杂度，但Session Bean不是持久的</li>
+</ul>
+</li>
+<li>Message-driven Bean：为一个特定的事件充当监听（如Java Message Service API）<ul>
+<li>允许Java EE异步处理信息，可以处理JMS消息或者其他类型的消息</li>
+<li>消息可以由任何的Java EE组件发送（应用客户端、其他EJB、Web组件），或者由JMS应用以及不使用Java EE技术的系统</li>
+</ul>
+</li>
+</ul>
+<h4 id="Session-Bean"><a href="#Session-Bean" class="headerlink" title="Session Bean"></a>Session Bean</h4><ul>
+<li>Stateful<ul>
+<li>代表了一个唯一的client与bean的一次会话，不共享。当bean的状态代表了特定的client与bean的交互、bean需要在跨方法调用的范围内保存client的信息、bean调解（中介）client与其他应用组件、bean在幕后管理几个enterprise bean的工作流时使用</li>
+</ul>
+</li>
+<li>Stateless<ul>
+<li>bean不保存与client的交互状态，只在一个方法调用的范围内维护client的信息，调用结束后状态消除。一个stateless session bean可以实现一个web service，而这是stateful session bean无法做到的。当bean没有某个特定client的信息、bean在一个方法调用内为所有client执行通用任务、bean实现了web service时使用</li>
+</ul>
+</li>
+<li>singleton<ul>
+<li>对每个应用只实例化一次，并存在于整个应用的生命周期内。为一个enterprise bean被许多client并发访问、共享的场景所设计。如同stateless session bean，singleton session bean也可以实现web service。通常用来执行初始化任务与清除任务</li>
+</ul>
+</li>
+</ul>
+<h4 id="客户端获取Bean的引用"><a href="#客户端获取Bean的引用" class="headerlink" title="客户端获取Bean的引用"></a>客户端获取Bean的引用</h4><ol>
+<li>JNDI查找<ul>
+<li>一个在Java EE服务器托管的环境外运行的应用，如Java SE应用程序必须执行一个明确的查找 </li>
+</ul>
+</li>
+<li>依赖注入<ul>
+<li>客户端运行在Java EE服务器托管环境下，JSF Web应用，JAX-RS Web服务，其他企业Bean，或是Java EE应用客户端，支持使用javax.ejb.EJB注释进行依赖注入</li>
+</ul>
+</li>
+</ol>
+<h4 id="客户端的类型"><a href="#客户端的类型" class="headerlink" title="客户端的类型"></a>客户端的类型</h4><ul>
+<li>Remote<ul>
+<li>它可以运行在不同的机器和不同的JVM从企业bean它访问</li>
+<li>它可以是Web组件、应用程序客户端或其他企业bean</li>
+<li>对于远程客户机，企业bean的位置是透明的</li>
+<li>企业bean必须实现业务接口，也就是说，远程客户端可能无法通过无接口视图访问企业bean</li>
+</ul>
+</li>
+<li>Locate<ul>
+<li>它必须运行在与它访问的企业bean相同的应用程序中</li>
+<li>它可以是一个Web组件或另一个企业bean</li>
+<li>对于本地客户端，企业bean访问的位置不透明</li>
+</ul>
+</li>
+<li>web service</li>
+</ul>
+<h4 id="打包文件结构"><a href="#打包文件结构" class="headerlink" title="打包文件结构"></a>打包文件结构</h4><p><img src="http://i1.piimg.com/567571/ffa1928962a65d0a.png" alt=""></p>
+<hr>
+<h2 id="6-JPA"><a href="#6-JPA" class="headerlink" title="6.JPA"></a>6.JPA</h2><h4 id="什么是JPA"><a href="#什么是JPA" class="headerlink" title="什么是JPA"></a>什么是JPA</h4><p>提供对象/关系型数据库的映射功能，完成数据持久化</p>
+<h4 id="什么是实体类"><a href="#什么是实体类" class="headerlink" title="什么是实体类"></a>什么是实体类</h4><p>一个轻量级的持久化领域对象。<br>通常，实体表示关系数据库中的表，并且每个实体实例对应于该表中的一行。<br>持久数据组件——内存中的对象，对应到数据库中的一个视图；一种持久性的、事务性的以及可以共享的组件，多个客户机可以同时使用其中的业务数据。</p>
+<p>一个普通的POJO类通过@Entity可以映射成为可持久化的类，类JavaBean风格<br>类属性必须为private；<br>有Getter和Setter方法；<br>有一个无参的构造方法。<br>@Entity：表明是实体类<br>@Table：映射到那张表<br>@Id：主键<br>@Column：映射字段</p>
+<h4 id="实例的四种状态"><a href="#实例的四种状态" class="headerlink" title="实例的四种状态"></a>实例的四种状态</h4><p><img src="http://i1.piimg.com/567571/b620796f199cab72.png" alt=""></p>
+<ul>
+<li><p>new</p>
+<ul>
+<li>通过new生成一个实体对象如：<br><code>User user=new User(“001”,“xyz”,……);</code><br>user通过JVM获得了一块内存空间，但是并没有保存进数据库，还没有纳入JPA EntityManager管理中，在数据库中==不存在==一条与它对应的记录</li>
+</ul>
+</li>
+<li><p>managed</p>
+<ul>
+<li>纳入JPA EntityManager管理中的对象。new状态的对象，可通过persist()方法把user与数据库相关联，成为==持久化对象==；或使用find()方法，得到持久化对象。在数据库中存在一条与它对应的记录，并拥有一个持久化标识 (identifier)，对持久化对象的操作，==影响数据库==</li>
+</ul>
+</li>
+<li>detached<ul>
+<li>游离对象。例如：find()方法调用后，可关闭EntityManager，成为游离对象，如: em.clear()</li>
+<li>对游离对象的操作，==不影响==数据库。和new状态的区别，在数据库中可能还存在一条与它对应的记录，只是现在这个游离对象脱离了JPA EntityManager的管理。游离对象转为持久对象调用merge()方法</li>
+</ul>
+</li>
+<li>removed<ul>
+<li>remove()方法，删除数据库中的记录在适当的时候被垃圾回收</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="7-安全"><a href="#7-安全" class="headerlink" title="7. 安全"></a>7. 安全</h2><h4 id="容器提供两种安全方式"><a href="#容器提供两种安全方式" class="headerlink" title="容器提供两种安全方式"></a>容器提供两种安全方式</h4><ul>
+<li>声明式<ul>
+<li>声明式安全通过使用部署描述或注释来表达应用程序组件的安全性要求。</li>
+<li>部署描述对于一个应用来说是外在的，包括了具体描述安全角色和访问要求向具体的环境安全角色、用户和策略的映射关系</li>
+<li>在j2ee平台中部署描述符充当了说明的安全性的主要工具。部署描述符是组件开发者和应用程序部署者或应用程序组装者之间的交流工具。应用程序的开发者用它来表示应用中的安全需求，应用程序部署者或应用程序组装者将安全角色与部署环境中的用户和组映射起来。在程序运行时容器从部署描述符中提取出相应的安全策略，然后容器根据安全策略执行安全验证。说明的安全性不需要开发人员编写任何安全相关的代码，一切都是通过配置部署描述符来完成的</li>
+</ul>
+</li>
+<li>编程式<ul>
+<li>嵌入在应用中被用来作出安全决策</li>
+<li>在只使用声明式安全不足以满足应用的安全模型的时候非常有用</li>
+</ul>
+</li>
+</ul>
+<h4 id="声明式安全声明了哪些与安全配置相关的信息"><a href="#声明式安全声明了哪些与安全配置相关的信息" class="headerlink" title="声明式安全声明了哪些与安全配置相关的信息"></a>声明式安全声明了哪些与安全配置相关的信息</h4><p>information that specifies how security roles and access requirements are mapped into environment-specific security roles, users, and policies.（具体描述安全角色和访问要求向具体的环境安全角色、用户和策略的映射关系）</p>
+<h4 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h4><ul>
+<li>用户和组<ul>
+<li>用户：应用程序终端用户的账户名（ID）</li>
+<li>组：命名的用户集合，可以包含0个或多个用户；通常用于表示具有类似系统资源访问权限的应用程序用户<ul>
+<li>“雇员”组：企业的所有用户</li>
+<li>“管理人员”组： “雇员”组的子集，可以访问敏感的工资数据</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>认证和授权<ul>
+<li>认证（Authentication）：用户向系统证明“我是谁”</li>
+<li>授权（Authorization）：应用服务器授予某个用户访问哪些资源的权限，“我能访问什么样的服务” </li>
+</ul>
+</li>
+<li>角色和策略<ul>
+<li>角色(role)：一种抽象的逻辑用户分组；代表相同资源访问权限的用户组或者特定用户；</li>
+<li>在部署时，角色被映射为授权的用户或组</li>
+<li>策略：回答“特定角色能够访问什么样的服务”的问题</li>
+</ul>
+</li>
+<li>审计和日志记录<ul>
+<li>收集、存储和分发整个系统中安全事件信息</li>
+<li>查看执行的活动；</li>
+<li>帮助检测和调查应用程序环境中的潜在弱点</li>
+</ul>
+</li>
+<li>防火墙<ul>
+<li>禁止任何不需要的协议或客户类型访问应用程序</li>
+</ul>
+</li>
+<li>数据保密和安全套接字<ul>
+<li>安全套接字层（Secure Sockets Layer, SSL）：通过在网络传输之前对数据加密，保证数据的机密性</li>
+<li>SSL结合了几种加密技术：数字证书、标准加密（对称密钥加密）、公钥加密  </li>
+</ul>
+</li>
+</ul>
+<h4 id="认证方式"><a href="#认证方式" class="headerlink" title="认证方式"></a>认证方式</h4><ul>
+<li>HTTP基本验证（HTTP Basic Authentication）</li>
+<li>基于表单的验证（Form-Based Authentication）</li>
+<li>基于客户端证书的验证（Client-Certificate Authentication）即通过HTTPS（HTTP over SSL）来保证验证的安全性</li>
+<li>摘要认证Digest authentication</li>
+<li>相互认证Mutual authentication</li>
+</ul>
+<hr>
+<h2 id="8-总体设计"><a href="#8-总体设计" class="headerlink" title="8. 总体设计"></a>8. 总体设计</h2><h4 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h4><p>架构<br><img src="http://i2.muimg.com/567571/e701109daf056707.png" alt=""></p>
+<ul>
+<li>模型：封装应用数据（关系数据库或EJB），处理商业逻辑</li>
+<li>视图：呈现给用户的界面（JSP或应用GUI）</li>
+<li>控制器：接受用户动作，并对应用数据进行适当的处理（Servlet）</li>
+</ul>
+<p>控制流程<br><img src="http://i2.muimg.com/567571/f6e5eb37d5641693.png" alt="">    </p>
+<ol>
+<li>client发起一个请求（浏览器）</li>
+<li>servlet获得请求</li>
+<li>servlet决定哪一个程序元素（JavaBeans, EJBs or other objects）该执行该请求</li>
+<li>JavaBeans或EJBs为servlet执行业务逻辑，并封装结果</li>
+<li>servlet决定展示模板（jsp）以便将内容返回给client</li>
+<li>jsp根据从JavaBeans获得的结果集生成具体内容</li>
+<li>返回并展示</li>
+</ol>
+<h4 id="SSH框架"><a href="#SSH框架" class="headerlink" title="SSH框架"></a>SSH框架</h4><p>总体结构<br><img src="http://i1.piimg.com/567571/3996e594b8067b51.png" alt=""></p>
+<p><img src="http://i1.piimg.com/567571/8b88c4bd76726325.png" alt=""></p>
+<p><img src="http://i2.muimg.com/567571/5fd3cc6f45e58311.png" alt=""></p>
+<p>struts</p>
+<p><img src="http://i1.piimg.com/567571/37c55ec5c707a3cb.png" alt=""></p>
+<p><img src="http://i2.muimg.com/567571/c4eec2a9678768e4.png" alt=""></p>
+<p>整合后的执行流程：</p>
+<ul>
+<li>客户端初始化一个指向servlet容器的请求</li>
+<li>请求经过一系列的过滤器（ActionContextCleanUp用来清除ac）</li>
+<li>FilterDispatch被调用，去查询ActionMapper来确定是否去调用某个action</li>
+<li>如果要调用某个action， filterdispatch将该请求交给Action Proxy</li>
+<li>Action Proxy通过 Configuration Manager 找到需要调用的Action</li>
+<li>Action Proxy创建ActionInvocation对象副本</li>
+<li>ActionInvocation回调action的execute方法</li>
+<li>action中已通过spring注入业务逻辑对象（**Bean），action的execute方法调用**Bean的业务逻辑方法</li>
+<li>**Bean中已通过spring注入了数据访问层对象（**DAO），**Bean执行业务逻辑，调用**DAO的方法</li>
+<li>**DAO通过hibernate与数据库进行交互，返回信息</li>
+<li>**bean返回信息</li>
+<li>action根据返回结果选择该展示的模板（jsp），设置好数据，返回相应字符串</li>
+<li>一旦执行结果返回结果字符串，ActionInvocation负责查找结果字符串对应的Result然后执行这个Result会调用一些模版（JSP）来呈现页面</li>
+<li>之后拦截器(Interceptor N)会被执行(顺序和Action执行之前相反)</li>
+<li>最后响应(HttpServletResponse)被返回给在web.xml中配置的那些过滤器和（核心控制器）（FilterDispatcher）。</li>
+</ul>
 
           
         
@@ -1476,860 +2766,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://hermc.github.io/2017/04/15/lessons/j2ee复习/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="HermC">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/11830448">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hermit">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/15/lessons/j2ee复习/" itemprop="url">
-                  j2ee与中间件
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-15T01:16:39+08:00">
-                2017-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/大学课程笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">大学课程笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><h4 id="什么是企业应用"><a href="#什么是企业应用" class="headerlink" title="什么是企业应用"></a>什么是企业应用</h4><p> 企业应用程序是分布式的、事务的和轻便的应用程序，利用服务器端技术的速度、安全性和可靠性，为企业提供业务逻辑。</p>
-<ol>
-<li>企业应用程序为企业提供了业务逻辑</li>
-<li>企业应用通常是集中管理的，经常与其他企业软件进行交互</li>
-<li>在信息技术领域的应用，企业应用必须以更少的成本，更高的速度和更少的资源来进行设计、建造和开发</li>
-</ol>
-<h4 id="J2EE多层式应用模型"><a href="#J2EE多层式应用模型" class="headerlink" title="J2EE多层式应用模型"></a>J2EE多层式应用模型</h4><p>可以分为4层：</p>
-<ul>
-<li>运行在客户机上的客户层</li>
-<li>运行在J2EE服务器上的web应用层</li>
-<li>运行在J2EE服务器上的业务逻辑层</li>
-<li><p>运行在EIS服务器上的企业信息系统层</p>
-<p>一般，J2EE应用程序被认为是三层体系结构，因为主要分布在三个地方：客户端、服务器端、数据库或是后台的遗留层。</p>
-</li>
-</ul>
-<h4 id="什么是组件"><a href="#什么是组件" class="headerlink" title="什么是组件"></a>什么是组件</h4><p>J2EE组件是一个独立的软件功能单元，与它相关的类和文件一起组织进J2EE应用，并与其他组件通讯。</p>
-<h4 id="J2EE组件与Java组件的区别"><a href="#J2EE组件与Java组件的区别" class="headerlink" title="J2EE组件与Java组件的区别"></a>J2EE组件与Java组件的区别</h4><p>Java EE组件与其他Java标准类的区别在于，Java EE将装配至一个Java EE应用中并通过验证，以保证其满足Java EE规范要求，从而可以部署在生产环境中。生产环境是一个Java EE服务器并可以管理Java EE组件的地方。</p>
-<h4 id="每一层分别有哪些组件"><a href="#每一层分别有哪些组件" class="headerlink" title="每一层分别有哪些组件"></a>每一层分别有哪些组件</h4><ol>
-<li>Application clients and applets(Java EE Client)<ul>
-<li>Web clients, Application clients, Applets, JavaBean Components</li>
-</ul>
-</li>
-<li>Web components<ul>
-<li>Servlets, web pages, JSP </li>
-</ul>
-</li>
-<li>Business components<ul>
-<li>EJB</li>
-</ul>
-</li>
-<li>EIS层<ul>
-<li>数据库和后台遗留层 </li>
-</ul>
-</li>
-</ol>
-<h4 id="J2EE运行时环境／容器"><a href="#J2EE运行时环境／容器" class="headerlink" title="J2EE运行时环境／容器"></a>J2EE运行时环境／容器</h4><p>容器是组件与底层平台功能间的接口。在Web组件、企业Bean或应用程序客户端运行之前，必须将其装配至Java EE模块并部署到容器中。</p>
-<h4 id="容器提供哪些服务"><a href="#容器提供哪些服务" class="headerlink" title="容器提供哪些服务"></a>容器提供哪些服务</h4><p>security, transaction management, Java Naming and Directory Interface (JNDI) lookups, and remote connectivity.<br>安全，事务处理，JNDI查找和远程连接。</p>
-<h4 id="容器的可配置和不可配置服务"><a href="#容器的可配置和不可配置服务" class="headerlink" title="容器的可配置和不可配置服务"></a>容器的可配置和不可配置服务</h4><ul>
-<li>J2EE安全模型让你可以配置Web组件或者是企业Bean，以保证资源只能被授权用户访问。</li>
-<li>J2EE事务模型让你指定属于同一个事务的多个方法以使这些方法作为一个原子操作被执行。</li>
-<li>JNDI查找服务为企业应用中的多种命名和目录服务提供统一接口，使应用程序组件可以统一访问这些命名和目录服务。</li>
-<li>J2EE远程连接模型管理客户端和企业Bean之间的底层通信。企业Bean被创建后，客户端调用它的方法就像在本地虚拟机中的调用一样。</li>
-<li>容器也管理着很多不可配置的服务，如<strong>企业Bean和Servlet的生命周期</strong>，<strong>数据库连接池</strong>，<strong>数据持久化机制</strong>和<strong>J2EE平台API</strong>的访问权等等。</li>
-</ul>
-<h4 id="容器的类型"><a href="#容器的类型" class="headerlink" title="容器的类型"></a>容器的类型</h4><ol>
-<li>Java EE Server<ul>
-<li>EJB Container<ul>
-<li>管理Java EE应用企业Bean的执行。</li>
-</ul>
-</li>
-<li>Web Container<ul>
-<li>管理Java EE应用的Web pages, Servlets, 和其他一些EJB组件的执行。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Application Client Server<ul>
-<li>管理客户端组件的执行 </li>
-</ul>
-</li>
-<li>Applet Container<ul>
-<li>管理Applets的执行</li>
-</ul>
-</li>
-</ol>
-<h4 id="J2EE打包成三种文件"><a href="#J2EE打包成三种文件" class="headerlink" title="J2EE打包成三种文件"></a>J2EE打包成三种文件</h4><ul>
-<li>Java Archive(JAR) file</li>
-<li>Web Archive(WAR) file</li>
-<li>Enterprise Archive(EAR) file</li>
-<li>war和ear都是jar只是加上了扩展名</li>
-</ul>
-<h4 id="一个标准的J2EE模块包含哪些部分"><a href="#一个标准的J2EE模块包含哪些部分" class="headerlink" title="一个标准的J2EE模块包含哪些部分"></a>一个标准的J2EE模块包含哪些部分</h4><ul>
-<li>功能性的一个或多个组件</li>
-<li><p>可选的部署描述文件</p>
-</li>
-<li><p>Web模块</p>
-<ul>
-<li>*.war</li>
-<li>包括servlet类文件，JSP页面文件，支持类文件，GIF和html文件，XML配置文件</li>
-<li>resources<ul>
-<li>html</li>
-<li>css</li>
-<li>js</li>
-<li>…</li>
-</ul>
-</li>
-<li>WEB-INF<ul>
-<li>web.xml</li>
-<li>*.xml</li>
-<li>classes</li>
-<li>tld</li>
-<li>lib</li>
-<li>…  </li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>EJB模块</p>
-<ul>
-<li>*.ear</li>
-<li>包括ejb文件，ejb配置文件</li>
-<li>application client模块：*.jar，包括相关类文件，程序客户端配置文件</li>
-<li><p>resource adapter模块：*.rar，包括所有的java接口，类，本地库和文档和资源适配描述文件</p>
-<p><img src="http://i1.piimg.com/567571/13902be2ee301490.png" alt=""></p>
-</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h2 id="2-Web应用"><a href="#2-Web应用" class="headerlink" title="2. Web应用"></a>2. Web应用</h2><h4 id="什么是Web应用"><a href="#什么是Web应用" class="headerlink" title="什么是Web应用"></a>什么是Web应用</h4><p>Web应用是Web应用服务器的动态拓展，有面向服务的和面向表现的两种类型。</p>
-<ul>
-<li>Presentation-oriented<ul>
-<li>通过标记语言和对请求响应的动态内容生成可交互Web页面</li>
-</ul>
-</li>
-<li>Service-oriented<ul>
-<li>面向服务的Web应用程序实现Web服务的端点</li>
-</ul>
-</li>
-</ul>
-<p>一般来说，一个Web应用可以看成是一组安装在服务器URL名称空间的特定子集下面的Servlet的集合。</p>
-<h4 id="请求处理过程"><a href="#请求处理过程" class="headerlink" title="请求处理过程"></a>请求处理过程</h4><ol>
-<li>客户端向Web服务器发送一个http请求</li>
-<li>实现了Java Servlet和Java Server Pages技术的服务器将请求转换为一个HttpServletRequest对象</li>
-<li>这个对象被投递到一个Web组件，这个组件可以与JavaBeans组件或者一个数据库交互生成一个动态内容(dynamic content)</li>
-<li>这个组件可以生成一个HttpServletResponse或者将这个请求转发给其他Web组件</li>
-<li>Web组件最终生成一个HttpServletResponse对象</li>
-<li>Web服务器将这个对象转换成http应答消息返回给客户端</li>
-</ol>
-<h4 id="Web容器提供哪些服务"><a href="#Web容器提供哪些服务" class="headerlink" title="Web容器提供哪些服务"></a>Web容器提供哪些服务</h4><ul>
-<li>request dispatching（请求分发）, security（安全）, concurrency（并发）, and lifecycle management（生命周期管理）</li>
-<li>Web容器同时也为Web组件提供了获取命名、事务、邮件（naming, transactions, and email）的API的方式</li>
-<li>Java EE annotations和部署配置文件进行配置</li>
-</ul>
-<h4 id="Web模块包含哪些内容"><a href="#Web模块包含哪些内容" class="headerlink" title="Web模块包含哪些内容"></a>Web模块包含哪些内容</h4><ul>
-<li>Web组件、web资源</li>
-<li>帮助类库(Helper classes and libraries)</li>
-<li>服务器端实用工具类（utility classes，例如database beans，shopping carts等）</li>
-<li>客户端类（applets和utility classes）</li>
-</ul>
-<h4 id="Web资源有哪些"><a href="#Web资源有哪些" class="headerlink" title="Web资源有哪些"></a>Web资源有哪些</h4><p>包含Web部件和静态网页内容的文件如图像的Web模块被称为网络资源</p>
-<h4 id="Web模块的目录结构"><a href="#Web模块的目录结构" class="headerlink" title="Web模块的目录结构"></a>Web模块的目录结构</h4><ol>
-<li>根目录document root：存放html，XHTML页面，客户端类和文档，静态资源例如图片等的目录；</li>
-<li>WEB-INF目录：<ul>
-<li>已经编译的class服务器端的类文件夹（servlets, enterprise bean class files, utility classes, and JavaBeans components）</li>
-<li>tags标签文件夹</li>
-<li>lib引用类库文件夹</li>
-<li>配置类文件（例如web.xml，ejb-jar.xml）</li>
-</ul>
-</li>
-</ol>
-<p><img src="http://i4.buimg.com/567571/9fcd23362028a4eb.png" alt=""></p>
-<h4 id="Tomcat组件"><a href="#Tomcat组件" class="headerlink" title="Tomcat组件"></a>Tomcat组件</h4><ol>
-<li>Server: 代表一个服务器</li>
-<li><p>Connector：在某一个指定端口监听用户请求，并且将获得的请求交给engine来处理</p>
-<ul>
-<li>Java HTTP Connector在端口8080侦听来自客户Browser的http请求<ul>
-<li>AJP 1.3 Connector在端口8009侦听来自其他Web Server(Apache)的JSP/Servlet代理请求</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Engine：将获得的请求匹配到某个虚拟主机上，并且吧请求交给该host来处理</p>
-</li>
-<li>Host：代表虚拟主机，每一个都和某个网络域名想匹配，每一个都可部署多个web应用</li>
-<li>Context：对应一个Web应用（由一些Servlet，HTML，Java类，JSP页面和一些其他的资源组成，在创建时根据在获得\<tomcat_home\>/conf/web.xml和\<webapp_home\>/WEB-INF/web.xml载入Servlet类。在请求时查询映射表找到被请求Servlet类并且执行以获得请求回应）</webapp_home\></tomcat_home\></li>
-</ol>
-<h4 id="Tomcat请求处理流程"><a href="#Tomcat请求处理流程" class="headerlink" title="Tomcat请求处理流程"></a>Tomcat请求处理流程</h4><ol>
-<li>请求被发送到本机端口8080,被Java HTTP Connector获得</li>
-<li>Connector将该请求交给它所在的service的Engine来处理并等待Engine的回应</li>
-<li>Engine获得请求，匹配所有的虚拟主机</li>
-<li>Engine匹配到名为localhost的主机</li>
-<li>Localhost主机获得请求，匹配所拥有的所有Context</li>
-<li>Localhost主机匹配到路径为/HelloWorld的Context</li>
-<li>路径为/HelloWorld的Context获得请求，在映射表中寻找对应的servlet</li>
-<li>Context匹配URLPATTERN为/的Servlet</li>
-<li>构造HttpServletRequest对象和HttpServletResponse对象，作为引用调用该Servlet的Service方法</li>
-<li>Context把执行完后的HttpServletResponse返回给localhost主机</li>
-<li>Host把HttpServletResponse对象返回给Engine</li>
-<li>Engine把HttpServletResponse对象返回给Connector</li>
-<li>Connector把HttpServletResponse对象返回给客户Browser</li>
-</ol>
-<hr>
-<h2 id="3-Servlet"><a href="#3-Servlet" class="headerlink" title="3. Servlet"></a>3. Servlet</h2><h4 id="Servlet"><a href="#Servlet" class="headerlink" title="Servlet"></a>Servlet</h4><p>Servlet是Java编程语言的类，用于扩展采用请求响应模式的服务器应用程序容量。</p>
-<h4 id="Servlet生命周期"><a href="#Servlet生命周期" class="headerlink" title="Servlet生命周期"></a>Servlet生命周期</h4><p>Servlet的生命周期由Servlet所部署的容器控制。<br>当一个客户端请求发送到服务器时，容器开始执行以下步骤：</p>
-<ol>
-<li>如果servlet实例不存在Web容器会：<ul>
-<li>载入servlet类</li>
-<li>创建一个servlet的实例</li>
-<li>调用init方法初始化这个实例</li>
-</ul>
-</li>
-<li>然后调用service的方法，传递request和response对象</li>
-</ol>
-<p>如果容器需要移除这个servlet，那么他就会通过调用servlet的destroy方法来释放这个servlet。</p>
-<h4 id="什么是URL-Pattern"><a href="#什么是URL-Pattern" class="headerlink" title="什么是URL Pattern"></a>什么是URL Pattern</h4><p>一个用于定义web组件或者例如图片，html页面这类静态对象的字符串。</p>
-<h4 id="请求URL"><a href="#请求URL" class="headerlink" title="请求URL"></a>请求URL</h4><p>URL包含以下部分：<br><a href="http://[host]:[port][request-path]?[query-string" target="_blank" rel="external">http://[host]:[port][request-path]?[query-string</a>]</p>
-<p>请求路径由以下元素组成:</p>
-<ul>
-<li>Context path: 向前的斜线/和servlet的Web应用的上下文根的拼接</li>
-<li>Servlet path: 与激活该请求的组件别名相应的路径部分，由向前的斜线/开始</li>
-<li>Path info: 请求路径的部分，不是上下文路径或者servlet路径的部分</li>
-</ul>
-<h4 id="Http请求，URL组成部分包括哪些元素？"><a href="#Http请求，URL组成部分包括哪些元素？" class="headerlink" title="Http请求，URL组成部分包括哪些元素？"></a>Http请求，URL组成部分包括哪些元素？</h4><p>采用请求响应模型，request（从客户端到服务器端），response（从服务器端到客户端）</p>
-<ol>
-<li>Request包括：</li>
-</ol>
-<p>request方法（包括GET，HEAD，POST，PUT，DELETE，OPTIONS，TRACE）<br>requestURL（一个字符串，由它来导向一个web组件，或者是一个静态的对象，例如html页面或者是图片文件什么的）<br>header fields<br>body</p>
-<ol>
-<li>Response包括：</li>
-</ol>
-<p>result code（例如404（表示请求资源不可用），401（请求需要HTTP认证），500（服务器内部错误导致无法完成请求）503（服务器超载导致无法完成请求））<br>header fields<br>body</p>
-<h4 id="URL和URI的区别"><a href="#URL和URI的区别" class="headerlink" title="URL和URI的区别"></a>URL和URI的区别</h4><p>URL是一种具体的URI，它不仅唯一标识资源，而且还提供了定位该资源的信息。<br>URI是一种语义上的抽象概念，可以是绝对的，也可以是相对的，而URL则必须提供足够的信息来定位，所以，是绝对的。</p>
-<h4 id="如何处理Servlet的线程安全问题"><a href="#如何处理Servlet的线程安全问题" class="headerlink" title="如何处理Servlet的线程安全问题"></a>如何处理Servlet的线程安全问题</h4><p>可以使用同步机制</p>
-<ol>
-<li>Servlet默认是多线程的，Server创建一个实例，用它处理并发请求——编写线程安全的类，避免使用可以修改的类变量和实例变量</li>
-<li>实例变量是在堆中分配的，不是线程安全的；</li>
-<li>Request，response是线程安全的</li>
-<li>局部变量是在栈中分配的，是线程安全的（局部变量可以作为参数传递）</li>
-<li>实现 SingleThreadModel接口：该接口指定了系统如何处理对同一个Servlet的调用。如果一个Servlet被这个接口指定,那么在这个Servlet中的service方法将不会有两个线程被同时执行，当然也就不存在线程安全的问题。</li>
-<li>同步对共享数据的操作：使用synchronized关键字能保证一次只有一个线程可以访问被保护的区段，在本论文中的Servlet可以通过同步块操作来保证线程的安全。</li>
-</ol>
-<h4 id="Http-Session会话机制"><a href="#Http-Session会话机制" class="headerlink" title="Http Session会话机制"></a>Http Session会话机制</h4><ul>
-<li>Cookie机制<ol>
-<li>当用户第一次访问站点→创建一个新的会话对象（Httpsession）， Server分配一个唯一的会话标识号(sessionID)<ul>
-<li>Servlet容器自动处理sessionID的分配</li>
-<li>尽可能长，确保安全</li>
-<li>把sessionID信息放到HttpSession对象中</li>
-</ul>
-</li>
-<li>Server创建一个暂时的HTTP cookie<ul>
-<li>cookie存储这个sessionID（名:jsessionid）</li>
-<li>Server将cookie添加到HTTP响应中</li>
-<li>Cookie被放置到客户机浏览器中，存储到客户机硬盘</li>
-</ul>
-</li>
-<li>客户浏览器发送包含Cookie的请求</li>
-<li>根据客户机浏览器发送的sessionID信息（cookie），Server找到相应的HttpSession对象，跟踪会话</li>
-<li>在会话超时间隔期间，如果没有接收到新的请求， Server将删除此会话对象<ul>
-<li>用户又访问该站点，必须重新登录，确保安全 </li>
-</ul>
-</li>
-</ol>
-</li>
-<li>URL重写<ol>
-<li>1、5与Cookie机制相同 </li>
-<li>Server将sessionID放在返回给客户端的URL中</li>
-<li>客户浏览器发送的请求将包含sessionID</li>
-<li>根据包含请求的sessionID信息（URL），Server找到相应的HttpSession对象，跟踪会话</li>
-</ol>
-</li>
-</ul>
-<h4 id="Cookie和Session两者应用上的区别"><a href="#Cookie和Session两者应用上的区别" class="headerlink" title="Cookie和Session两者应用上的区别"></a>Cookie和Session两者应用上的区别</h4><ul>
-<li><p>Cookie</p>
-<ol>
-<li>跟踪会话，也可以独立于http会话使用cookie</li>
-<li>长期“记住用户信息”</li>
-<li><p>存储在本地计算机硬盘上 </p>
-<p>用户登录ID<br>用户对语言和颜色的选择之类的偏好<br>跟踪应用程序的使用情况<br>cookie.txt文件</p>
-</li>
-</ol>
-</li>
-<li><p>Session</p>
-<ol>
-<li>保存在服务器端内存中</li>
-<li><p>使用机制不同 </p>
-<p>跟踪用户的购物车<br>导航信息，登录状态</p>
-</li>
-</ol>
-</li>
-</ul>
-<h4 id="Web组件共享信息的方式"><a href="#Web组件共享信息的方式" class="headerlink" title="Web组件共享信息的方式"></a>Web组件共享信息的方式</h4><ul>
-<li>通过使用私有的帮助对象（helper objects），比如：JavaBeans components</li>
-<li>通过共享公共作用域的对象属性（objects that are attributes of a public scope）</li>
-<li>可以使用数据库</li>
-<li>可以调用其它网络资源</li>
-</ul>
-<h4 id="Web组件共享信息的四种作用域对象"><a href="#Web组件共享信息的四种作用域对象" class="headerlink" title="Web组件共享信息的四种作用域对象"></a>Web组件共享信息的四种作用域对象</h4><ul>
-<li>Web Content<ul>
-<li>作用域为应用程序运行期，工程启动后存在，当容器关闭时被销毁 </li>
-</ul>
-</li>
-<li>Session<ul>
-<li>作用域为会话期，从打开一个浏览器窗口开始，关闭窗口，会话关闭，当会话超时，被销毁 </li>
-</ul>
-</li>
-<li>Request<ul>
-<li>作用域为用户请求期，只要Server向客户端输出内容，就被销毁 </li>
-</ul>
-</li>
-<li>Page<ul>
-<li>作用域为页面执行期</li>
-</ul>
-</li>
-</ul>
-<h4 id="过滤器，与其他Web组件的区别"><a href="#过滤器，与其他Web组件的区别" class="headerlink" title="过滤器，与其他Web组件的区别"></a>过滤器，与其他Web组件的区别</h4><ul>
-<li>过滤器是一个可以改变请求或响应的标题或者内容的对象。</li>
-<li>过滤器和其他web组件不同的地方在于，过滤器通常不需要自己创建一个响应，相反，他们提供可以附加于任何类型的网络资源上的功能。</li>
-<li>应用场景<ul>
-<li>改善代码重用，在不修改servlet代码的情况下想servlet添加功能<ul>
-<li>身份验证</li>
-</ul>
-</li>
-<li>用于跨多个servlet执行一些功能，创建可重复使用的功能</li>
-<li>在servlet处理请求之前截获请求<ul>
-<li>在调用servlet之前截获请求，验证用户身份，未经授权的用户遭到拒绝，而servlet不知道曾经有过这样的请求</li>
-</ul>
-</li>
-<li>代码重用、应用安全策略、日志、为特定目标浏览器传输XML输出、图像转换和加密、动态压缩输出 </li>
-</ul>
-</li>
-</ul>
-<h4 id="J2EE监听器"><a href="#J2EE监听器" class="headerlink" title="J2EE监听器"></a>J2EE监听器</h4><p>监听器是当生命周期时间发生前、发生后进行一些处理。</p>
-<p>可以监听的生命周期事件：</p>
-<ul>
-<li>Web Context<ul>
-<li>初始化和销毁</li>
-<li>属性的添加、移除或替换</li>
-</ul>
-</li>
-<li>Session<ul>
-<li>创建，失效，活化，钝化，超时</li>
-<li>属性的添加、移除或替换</li>
-</ul>
-</li>
-<li>Request<ul>
-<li>一个servlet请求开始被web组件处理  </li>
-<li>属性的添加、移除或替换</li>
-</ul>
-</li>
-</ul>
-<ol>
-<li>监听系统关闭或者是开启</li>
-<li>监听用户访问次数</li>
-<li>监听用户是否登录</li>
-<li>监听session是否改变等</li>
-</ol>
-<h4 id="部署描述文件和注解的区别"><a href="#部署描述文件和注解的区别" class="headerlink" title="部署描述文件和注解的区别"></a>部署描述文件和注解的区别</h4><ul>
-<li>注解往往是类级别的，因此，XML 配置则可以表现得更加灵活</li>
-<li>在应用中，往往需要同时使用注解配置和 XML 配置<ul>
-<li>对于类级别且不会发生变动的配置可以优先考虑注解配置</li>
-<li>而对于那些第三方类以及容易发生调整的配置则应优先考虑使用 XML 配置</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h2 id="4-JSP页面"><a href="#4-JSP页面" class="headerlink" title="4. JSP页面"></a>4. JSP页面</h2><h4 id="JSP"><a href="#JSP" class="headerlink" title="JSP"></a>JSP</h4><p>JSP允许创建包括静态和动态组件的web内容。servlet是JSP的基础，JSP提供了所有servlet可以实现的动态功能，并且还提供一种更加自然的静态内容的创建方法。</p>
-<ul>
-<li>静态数据<ul>
-<li>HTML, SVG, WML and XML</li>
-<li>静态数据转换成将数据发送到响应流中的代码 </li>
-</ul>
-</li>
-<li>JSP元素<ul>
-<li>Directives指令用于控制web容器如何翻译和执行JSP页面</li>
-<li>Scripting elements脚本元素插入该JSP页面的servlet类中</li>
-<li>Expression language表达式作为参数传递给JSP表达式解释器</li>
-<li>jsp:[set|get]Property转换成方法调用JavaBeans组件</li>
-<li>jsp:[include|forward]转换成Java Servlet API的调用</li>
-<li>jsp:plugin被转换成浏览器特定的标记，用于激活一个applet</li>
-<li>Custom tags自定义标签调用标记处理程序实现自定义标签调用</li>
-</ul>
-</li>
-</ul>
-<h4 id="JSP生命周期"><a href="#JSP生命周期" class="headerlink" title="JSP生命周期"></a>JSP生命周期</h4><p>JSP页面以Servlet的形式提供请求服务，所以，JSP的生命周期和许多JSP功能都是由Servlet技术决定的（特别是动态的方面）</p>
-<ol>
-<li>如果JSP页面的servlet实例不存在，容器将：<ul>
-<li>加载该JSP页面的servlet类</li>
-<li>实例化servlet类的实例 </li>
-<li>通过调用jspInit方法初始化servlet实例</li>
-</ul>
-</li>
-<li>容器调用_jspservice方法，传递请求和响应对象</li>
-<li>如果容器需要移除JSP页面的servlet，它调用jspDestroy方法</li>
-</ol>
-<h4 id="指令元素"><a href="#指令元素" class="headerlink" title="指令元素"></a>指令元素</h4><ul>
-<li>page指令：可以通过Page指令来控制各种JSP页面执行参数<ul>
-<li><code>&lt;jsp:directive.page attribute list/&gt;</code></li>
-<li><code>&lt;%@ page property-attribs%&gt;</code></li>
-<li>参数包括：<ul>
-<li>session是否创建session<ul>
-<li><code>&lt;%@ page  session= &quot;true&quot; %&gt;</code> </li>
-</ul>
-</li>
-<li>import引用依赖<ul>
-<li><code>&lt;%@ page import= &quot;package.*&quot; %&gt;</code> </li>
-</ul>
-</li>
-<li>extends扩展其他类<ul>
-<li><code>&lt;%@ page extends= &quot;com.learnweblogic.JspCommon&quot; %&gt;</code> </li>
-</ul>
-</li>
-<li>contentType设置文本类型和字符编码<ul>
-<li><code>&lt;%@ page contentType= &quot;text/html,charset=GBK&quot; %&gt;</code></li>
-</ul>
-</li>
-<li>buffer设置缓冲区<ul>
-<li>缺省情况下：写入输出流的内容会立即发送给客户</li>
-<li><code>&lt;%@ page buffer=&quot;none|xxxkb&quot; %&gt;</code></li>
-</ul>
-</li>
-<li>isThreadSafe<ul>
-<li>isThreadSafe= “true|false”</li>
-<li>false意味着一次只能有一个线程执行JSP中的代码</li>
-</ul>
-</li>
-<li>errorPage<ul>
-<li><code>&lt;%@ page errorPage=&quot;file-name&quot; %&gt;</code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>include指令：当JSP页面被转换成Servlet时被处理，实现JSP页面的模块化，使JSP的开发和维护变得相当简单</p>
-<ul>
-<li><code>&lt;jsp:directive.include file=&quot;filename&quot;/&gt;</code> </li>
-<li><code>&lt;%@ include file=&quot;filename&quot; %&gt;</code></li>
-<li><p>相当于</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">RequestDispatcher dispatcher=getServletContext().getRequestDispatcher(&quot;/banner.jsp&quot;);</div><div class="line">if(dispatcher!=null)</div><div class="line">	dispatcher.include(request,response);</div></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-<li><p>Taglib指令</p>
-<ul>
-<li><code>&lt;%@ taglib uri=&quot;uri&quot; prefix=&quot;tagPrefix&quot; %&gt;</code></li>
-</ul>
-</li>
-</ul>
-<h4 id="脚本元素"><a href="#脚本元素" class="headerlink" title="脚本元素"></a>脚本元素</h4><ul>
-<li><p>声明</p>
-<ul>
-<li><p>声明的变量只在当前页面中可用<code>&lt;%! int foo=3; %&gt;</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;%!</div><div class="line">	public void jspInit() &#123;</div><div class="line">		……</div><div class="line">	&#125;</div><div class="line">%&gt;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-<li><p>脚本</p>
-<ul>
-<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;%</div><div class="line">	scripting-language-statements</div><div class="line">%&gt;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-<li><p>表达式</p>
-<ul>
-<li><code>&lt;%= scripting-language-expression %&gt;</code></li>
-</ul>
-</li>
-</ul>
-<h4 id="脚本元素中创建和使用对象的方法有哪些？这些对象在翻译时如何进行处理？"><a href="#脚本元素中创建和使用对象的方法有哪些？这些对象在翻译时如何进行处理？" class="headerlink" title="脚本元素中创建和使用对象的方法有哪些？这些对象在翻译时如何进行处理？"></a>脚本元素中创建和使用对象的方法有哪些？这些对象在翻译时如何进行处理？</h4><ul>
-<li>类实例和类变量：在声明中创建，在脚本和表达式中被使用</li>
-<li>局部变量：在脚本和表达式中被创建和使用</li>
-<li>作用域对象的属性：在脚本和表达式中被创建和使用</li>
-</ul>
-<h4 id="JSP常用隐式对象"><a href="#JSP常用隐式对象" class="headerlink" title="JSP常用隐式对象"></a>JSP常用隐式对象</h4><ol>
-<li>Out对象<ul>
-<li>做PrintWriter对象能做的一切事情</li>
-<li>调用print()/println()方法，把信息回送给客户端浏览器</li>
-<li>作用域是当前页面（page）</li>
-<li>每个JSP页面有一个out对象的实例</li>
-<li>缺省采用缓存，可以使用page指令调整其大小 </li>
-</ul>
-</li>
-<li>Request对象<ul>
-<li>使用request对象得到请求信息中的参数</li>
-</ul>
-</li>
-<li>Response对象<ul>
-<li>使用response对象发送重定向、修改HTTP头、指定URL重写</li>
-</ul>
-</li>
-<li>Session对象<ul>
-<li>javax.servlet.http.HttpSession的实例    </li>
-</ul>
-</li>
-<li>Application对象<ul>
-<li>从web.xml获取初始化参数、访问RequestDispatcher</li>
-</ul>
-</li>
-<li>PageContext对象<ul>
-<li>对页面作用域的属性的访问</li>
-</ul>
-</li>
-</ol>
-<h4 id="JSP动作"><a href="#JSP动作" class="headerlink" title="JSP动作"></a>JSP动作</h4><ul>
-<li>可以使用脚本执行动作提供的任何功能</li>
-<li>动作改进了脚本，易于使用，帮助摆脱java代码</li>
-</ul>
-<ol>
-<li><code>&lt;jsp:include&gt;</code><ul>
-<li><code>&lt;jsp:include page= &quot; Copyright.html&quot; /&gt;</code></li>
-<li>与include指令的区别<ul>
-<li>include指令：包括其他页面，编译时把其他页面的内容加进来，比include动作快  </li>
-<li>include标准动作：使用RequestDispatcher，运行时把其他页面的内容加进来（包括到输出流中）</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>&lt;jsp:forward&gt;</code><ul>
-<li><code>&lt;jsp:forward page= &quot; foo.jsp&quot; /&gt;</code></li>
-<li>与HTTP重定向的差别<ul>
-<li>HTTP重定向：发送的请求信息又回送给客户机，让客户机再转发到另一个资源上，新的URL出现在Web浏览器中，需要在服务器和客户机之间增加一次通信</li>
-<li>forward标准动作：使用RequestDispatcher ，JSP的转发功能是在服务器本身上实现的</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><code>&lt;jsp:param&gt;</code></p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">	&lt;jsp:include page= &quot; /itemdetail.jsp&quot; &gt;</div><div class="line">		&lt;jsp:param name= &quot; itemid &quot; value= &quot; %=itemId&quot; /&gt;</div><div class="line">	&lt;/jsp: include &gt;</div><div class="line">	``` </div><div class="line">4. `&lt;jsp:plugin&gt;`</div></pre></td></tr></table></figure>
-<p> <jsp:plugin type="“bean|applet”" code="“classname”" codebase="“codebase-uri”" […..]=""><br> </jsp:plugin><br> ```</p>
-</li>
-<li><code>&lt;jsp:useBean&gt;``&lt;jsp:sebProperty&gt;``&lt;jsp:getProperty&gt;</code>    </li>
-</ol>
-<h4 id="Java-Bean组件的设计规范"><a href="#Java-Bean组件的设计规范" class="headerlink" title="Java Bean组件的设计规范"></a>Java Bean组件的设计规范</h4><ol>
-<li>一个JavaBean组件属性必须是<ul>
-<li>Read/write, read-only, or write-only</li>
-<li>简单，也就是说它只包含一个数值或一个索引（即指代表一个数组）</li>
-</ul>
-</li>
-<li>必须使用符合下列约定的public方法来访问<ul>
-<li>对每一个可读的属性，具有方法：<code>PropertyClass getProperty() {...}</code></li>
-<li>对每一个可写的属性，具有方法：<code>setProperty(PropertyClass pc) {...}</code></li>
-</ul>
-</li>
-<li>Java Bean还需要有一个无参构造函数</li>
-</ol>
-<h4 id="Java-Bean组件的作用域"><a href="#Java-Bean组件的作用域" class="headerlink" title="Java Bean组件的作用域"></a>Java Bean组件的作用域</h4><ol>
-<li>application<br> <code>&lt;jsp:useBean id=&quot;locales&quot; scope=&quot;application&quot; class=&quot;mypkg.MyLocales&quot;/&gt;</code> </li>
-<li>session</li>
-<li>request</li>
-<li>page</li>
-</ol>
-<hr>
-<h2 id="5-EJB"><a href="#5-EJB" class="headerlink" title="5. EJB"></a>5. EJB</h2><h4 id="什么是EJB"><a href="#什么是EJB" class="headerlink" title="什么是EJB"></a>什么是EJB</h4><p>企业bean是用Java编程语言编写的一种服务器端组件用于封装应用程序的业务逻辑。</p>
-<ul>
-<li>Session Bean：为客户端执行某个任务，也有可能实现一个Web服务，封装业务逻辑，可以被本地的或者远程的客户端以及网络服务客户端的页面（web service client views）<ul>
-<li>Session Bean封装了实现的复杂度，但Session Bean不是持久的</li>
-</ul>
-</li>
-<li>Message-driven Bean：为一个特定的事件充当监听（如Java Message Service API）<ul>
-<li>允许Java EE异步处理信息，可以处理JMS消息或者其他类型的消息</li>
-<li>消息可以由任何的Java EE组件发送（应用客户端、其他EJB、Web组件），或者由JMS应用以及不使用Java EE技术的系统</li>
-</ul>
-</li>
-</ul>
-<h4 id="Session-Bean"><a href="#Session-Bean" class="headerlink" title="Session Bean"></a>Session Bean</h4><ul>
-<li>Stateful<ul>
-<li>代表了一个唯一的client与bean的一次会话，不共享。当bean的状态代表了特定的client与bean的交互、bean需要在跨方法调用的范围内保存client的信息、bean调解（中介）client与其他应用组件、bean在幕后管理几个enterprise bean的工作流时使用</li>
-</ul>
-</li>
-<li>Stateless<ul>
-<li>bean不保存与client的交互状态，只在一个方法调用的范围内维护client的信息，调用结束后状态消除。一个stateless session bean可以实现一个web service，而这是stateful session bean无法做到的。当bean没有某个特定client的信息、bean在一个方法调用内为所有client执行通用任务、bean实现了web service时使用</li>
-</ul>
-</li>
-<li>singleton<ul>
-<li>对每个应用只实例化一次，并存在于整个应用的生命周期内。为一个enterprise bean被许多client并发访问、共享的场景所设计。如同stateless session bean，singleton session bean也可以实现web service。通常用来执行初始化任务与清除任务</li>
-</ul>
-</li>
-</ul>
-<h4 id="客户端获取Bean的引用"><a href="#客户端获取Bean的引用" class="headerlink" title="客户端获取Bean的引用"></a>客户端获取Bean的引用</h4><ol>
-<li>JNDI查找<ul>
-<li>一个在Java EE服务器托管的环境外运行的应用，如Java SE应用程序必须执行一个明确的查找 </li>
-</ul>
-</li>
-<li>依赖注入<ul>
-<li>客户端运行在Java EE服务器托管环境下，JSF Web应用，JAX-RS Web服务，其他企业Bean，或是Java EE应用客户端，支持使用javax.ejb.EJB注释进行依赖注入</li>
-</ul>
-</li>
-</ol>
-<h4 id="客户端的类型"><a href="#客户端的类型" class="headerlink" title="客户端的类型"></a>客户端的类型</h4><ul>
-<li>Remote<ul>
-<li>它可以运行在不同的机器和不同的JVM从企业bean它访问</li>
-<li>它可以是Web组件、应用程序客户端或其他企业bean</li>
-<li>对于远程客户机，企业bean的位置是透明的</li>
-<li>企业bean必须实现业务接口，也就是说，远程客户端可能无法通过无接口视图访问企业bean</li>
-</ul>
-</li>
-<li>Locate<ul>
-<li>它必须运行在与它访问的企业bean相同的应用程序中</li>
-<li>它可以是一个Web组件或另一个企业bean</li>
-<li>对于本地客户端，企业bean访问的位置不透明</li>
-</ul>
-</li>
-<li>web service</li>
-</ul>
-<h4 id="打包文件结构"><a href="#打包文件结构" class="headerlink" title="打包文件结构"></a>打包文件结构</h4><p><img src="http://i1.piimg.com/567571/ffa1928962a65d0a.png" alt=""></p>
-<hr>
-<h2 id="6-JPA"><a href="#6-JPA" class="headerlink" title="6.JPA"></a>6.JPA</h2><h4 id="什么是JPA"><a href="#什么是JPA" class="headerlink" title="什么是JPA"></a>什么是JPA</h4><p>提供对象/关系型数据库的映射功能，完成数据持久化</p>
-<h4 id="什么是实体类"><a href="#什么是实体类" class="headerlink" title="什么是实体类"></a>什么是实体类</h4><p>一个轻量级的持久化领域对象。<br>通常，实体表示关系数据库中的表，并且每个实体实例对应于该表中的一行。<br>持久数据组件——内存中的对象，对应到数据库中的一个视图；一种持久性的、事务性的以及可以共享的组件，多个客户机可以同时使用其中的业务数据。</p>
-<p>一个普通的POJO类通过@Entity可以映射成为可持久化的类，类JavaBean风格<br>类属性必须为private；<br>有Getter和Setter方法；<br>有一个无参的构造方法。<br>@Entity：表明是实体类<br>@Table：映射到那张表<br>@Id：主键<br>@Column：映射字段</p>
-<h4 id="实例的四种状态"><a href="#实例的四种状态" class="headerlink" title="实例的四种状态"></a>实例的四种状态</h4><p><img src="http://i1.piimg.com/567571/b620796f199cab72.png" alt=""></p>
-<ul>
-<li><p>new</p>
-<ul>
-<li>通过new生成一个实体对象如：<br><code>User user=new User(“001”,“xyz”,……);</code><br>user通过JVM获得了一块内存空间，但是并没有保存进数据库，还没有纳入JPA EntityManager管理中，在数据库中==不存在==一条与它对应的记录</li>
-</ul>
-</li>
-<li><p>managed</p>
-<ul>
-<li>纳入JPA EntityManager管理中的对象。new状态的对象，可通过persist()方法把user与数据库相关联，成为==持久化对象==；或使用find()方法，得到持久化对象。在数据库中存在一条与它对应的记录，并拥有一个持久化标识 (identifier)，对持久化对象的操作，==影响数据库==</li>
-</ul>
-</li>
-<li>detached<ul>
-<li>游离对象。例如：find()方法调用后，可关闭EntityManager，成为游离对象，如: em.clear()</li>
-<li>对游离对象的操作，==不影响==数据库。和new状态的区别，在数据库中可能还存在一条与它对应的记录，只是现在这个游离对象脱离了JPA EntityManager的管理。游离对象转为持久对象调用merge()方法</li>
-</ul>
-</li>
-<li>removed<ul>
-<li>remove()方法，删除数据库中的记录在适当的时候被垃圾回收</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h2 id="7-安全"><a href="#7-安全" class="headerlink" title="7. 安全"></a>7. 安全</h2><h4 id="容器提供两种安全方式"><a href="#容器提供两种安全方式" class="headerlink" title="容器提供两种安全方式"></a>容器提供两种安全方式</h4><ul>
-<li>声明式<ul>
-<li>声明式安全通过使用部署描述或注释来表达应用程序组件的安全性要求。</li>
-<li>部署描述对于一个应用来说是外在的，包括了具体描述安全角色和访问要求向具体的环境安全角色、用户和策略的映射关系</li>
-<li>在j2ee平台中部署描述符充当了说明的安全性的主要工具。部署描述符是组件开发者和应用程序部署者或应用程序组装者之间的交流工具。应用程序的开发者用它来表示应用中的安全需求，应用程序部署者或应用程序组装者将安全角色与部署环境中的用户和组映射起来。在程序运行时容器从部署描述符中提取出相应的安全策略，然后容器根据安全策略执行安全验证。说明的安全性不需要开发人员编写任何安全相关的代码，一切都是通过配置部署描述符来完成的</li>
-</ul>
-</li>
-<li>编程式<ul>
-<li>嵌入在应用中被用来作出安全决策</li>
-<li>在只使用声明式安全不足以满足应用的安全模型的时候非常有用</li>
-</ul>
-</li>
-</ul>
-<h4 id="声明式安全声明了哪些与安全配置相关的信息"><a href="#声明式安全声明了哪些与安全配置相关的信息" class="headerlink" title="声明式安全声明了哪些与安全配置相关的信息"></a>声明式安全声明了哪些与安全配置相关的信息</h4><p>information that specifies how security roles and access requirements are mapped into environment-specific security roles, users, and policies.（具体描述安全角色和访问要求向具体的环境安全角色、用户和策略的映射关系）</p>
-<h4 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h4><ul>
-<li>用户和组<ul>
-<li>用户：应用程序终端用户的账户名（ID）</li>
-<li>组：命名的用户集合，可以包含0个或多个用户；通常用于表示具有类似系统资源访问权限的应用程序用户<ul>
-<li>“雇员”组：企业的所有用户</li>
-<li>“管理人员”组： “雇员”组的子集，可以访问敏感的工资数据</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>认证和授权<ul>
-<li>认证（Authentication）：用户向系统证明“我是谁”</li>
-<li>授权（Authorization）：应用服务器授予某个用户访问哪些资源的权限，“我能访问什么样的服务” </li>
-</ul>
-</li>
-<li>角色和策略<ul>
-<li>角色(role)：一种抽象的逻辑用户分组；代表相同资源访问权限的用户组或者特定用户；</li>
-<li>在部署时，角色被映射为授权的用户或组</li>
-<li>策略：回答“特定角色能够访问什么样的服务”的问题</li>
-</ul>
-</li>
-<li>审计和日志记录<ul>
-<li>收集、存储和分发整个系统中安全事件信息</li>
-<li>查看执行的活动；</li>
-<li>帮助检测和调查应用程序环境中的潜在弱点</li>
-</ul>
-</li>
-<li>防火墙<ul>
-<li>禁止任何不需要的协议或客户类型访问应用程序</li>
-</ul>
-</li>
-<li>数据保密和安全套接字<ul>
-<li>安全套接字层（Secure Sockets Layer, SSL）：通过在网络传输之前对数据加密，保证数据的机密性</li>
-<li>SSL结合了几种加密技术：数字证书、标准加密（对称密钥加密）、公钥加密  </li>
-</ul>
-</li>
-</ul>
-<h4 id="认证方式"><a href="#认证方式" class="headerlink" title="认证方式"></a>认证方式</h4><ul>
-<li>HTTP基本验证（HTTP Basic Authentication）</li>
-<li>基于表单的验证（Form-Based Authentication）</li>
-<li>基于客户端证书的验证（Client-Certificate Authentication）即通过HTTPS（HTTP over SSL）来保证验证的安全性</li>
-<li>摘要认证Digest authentication</li>
-<li>相互认证Mutual authentication</li>
-</ul>
-<hr>
-<h2 id="8-总体设计"><a href="#8-总体设计" class="headerlink" title="8. 总体设计"></a>8. 总体设计</h2><h4 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h4><p>架构<br><img src="http://i2.muimg.com/567571/e701109daf056707.png" alt=""></p>
-<ul>
-<li>模型：封装应用数据（关系数据库或EJB），处理商业逻辑</li>
-<li>视图：呈现给用户的界面（JSP或应用GUI）</li>
-<li>控制器：接受用户动作，并对应用数据进行适当的处理（Servlet）</li>
-</ul>
-<p>控制流程<br><img src="http://i2.muimg.com/567571/f6e5eb37d5641693.png" alt="">    </p>
-<ol>
-<li>client发起一个请求（浏览器）</li>
-<li>servlet获得请求</li>
-<li>servlet决定哪一个程序元素（JavaBeans, EJBs or other objects）该执行该请求</li>
-<li>JavaBeans或EJBs为servlet执行业务逻辑，并封装结果</li>
-<li>servlet决定展示模板（jsp）以便将内容返回给client</li>
-<li>jsp根据从JavaBeans获得的结果集生成具体内容</li>
-<li>返回并展示</li>
-</ol>
-<h4 id="SSH框架"><a href="#SSH框架" class="headerlink" title="SSH框架"></a>SSH框架</h4><p>总体结构<br><img src="http://i1.piimg.com/567571/3996e594b8067b51.png" alt=""></p>
-<p><img src="http://i1.piimg.com/567571/8b88c4bd76726325.png" alt=""></p>
-<p><img src="http://i2.muimg.com/567571/5fd3cc6f45e58311.png" alt=""></p>
-<p>struts</p>
-<p><img src="http://i1.piimg.com/567571/37c55ec5c707a3cb.png" alt=""></p>
-<p><img src="http://i2.muimg.com/567571/c4eec2a9678768e4.png" alt=""></p>
-<p>整合后的执行流程：</p>
-<ul>
-<li>客户端初始化一个指向servlet容器的请求</li>
-<li>请求经过一系列的过滤器（ActionContextCleanUp用来清除ac）</li>
-<li>FilterDispatch被调用，去查询ActionMapper来确定是否去调用某个action</li>
-<li>如果要调用某个action， filterdispatch将该请求交给Action Proxy</li>
-<li>Action Proxy通过 Configuration Manager 找到需要调用的Action</li>
-<li>Action Proxy创建ActionInvocation对象副本</li>
-<li>ActionInvocation回调action的execute方法</li>
-<li>action中已通过spring注入业务逻辑对象（**Bean），action的execute方法调用**Bean的业务逻辑方法</li>
-<li>**Bean中已通过spring注入了数据访问层对象（**DAO），**Bean执行业务逻辑，调用**DAO的方法</li>
-<li>**DAO通过hibernate与数据库进行交互，返回信息</li>
-<li>**bean返回信息</li>
-<li>action根据返回结果选择该展示的模板（jsp），设置好数据，返回相应字符串</li>
-<li>一旦执行结果返回结果字符串，ActionInvocation负责查找结果字符串对应的Result然后执行这个Result会调用一些模版（JSP）来呈现页面</li>
-<li>之后拦截器(Interceptor N)会被执行(顺序和Action执行之前相反)</li>
-<li>最后响应(HttpServletResponse)被返回给在web.xml中配置的那些过滤器和（核心控制器）（FilterDispatcher）。</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://hermc.github.io/2017/04/14/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2495,7 +2931,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2517,7 +2953,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
